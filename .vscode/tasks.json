@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+
+        {
+            "label": "loadNXOpenBuiltins",
+            "type": "shell",
+            "command": "python",
+            "args": [
+					"C:/Program Files/Siemens/NX 12.0/NXBIN/python/NXOpen.pyd",
+					"C:/Program Files/Siemens/NX 12.0/NXBIN/python/NXOpen_Features.pyd"					
+					]
+        }
+    ]
+}

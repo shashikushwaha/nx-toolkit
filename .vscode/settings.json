@@ -1,0 +1,20 @@
+{
+    "debug.onTaskErrors": "debugAnyway",
+    "testing.alwaysRevealTestOnStateChange": true,
+    "testing.followRunningTest": true,
+    "python.testing.pytestEnabled": false,
+	"python.testing.unittestEnabled": true,
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./tests",
+        "-p",
+        "test_*.py"
+    ],
+    "python.languageServer": "Pylance",
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.defaultPackageManager": "ms-python.python:pip",
+    "python.pythonPath": "C:\\Users\\User\\.conda\\envs\\myenv36\\python.exe",
+		
+
+}
