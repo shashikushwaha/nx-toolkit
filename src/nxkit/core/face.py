@@ -1,5 +1,6 @@
 import sys
 import NXOpen
+from typing import List, cast
 from .displayable_object import DisplayableObject
 
 class Face(DisplayableObject):
@@ -8,5 +9,7 @@ class Face(DisplayableObject):
 
     @property
     def nx_object(self) -> NXOpen.Face:
-        return super().nx_object
+        return cast(NXOpen.Face, super().nx_object)
+    
+
 

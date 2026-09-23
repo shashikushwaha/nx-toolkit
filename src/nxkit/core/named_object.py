@@ -1,7 +1,7 @@
 import sys
 import math
 import NXOpen
-from typing import List
+from typing import List, cast
 from .tagged_object import TaggedObject
 
 
@@ -11,7 +11,7 @@ class NamedObject(TaggedObject):
 
     @property
     def nx_object(self) -> NXOpen.NXObject:
-        return super().nx_object
+        return cast(NXOpen.NXObject, self.tagged_object)
 
     @property
     def Name(self) ->str :

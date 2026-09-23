@@ -1,7 +1,7 @@
 import sys
 from .named_object import NamedObject
 from .body import Body
-from typing import List
+from typing import List, cast
 import NXOpen
 import NXOpen_Features
 
@@ -12,7 +12,7 @@ class Feature(NamedObject):
 
     @property
     def nx_object(self) -> NXOpen_Features.Feature:
-        return super().nx_object
+        return cast(NXOpen_Features.Feature, super().nx_object)
 
     @staticmethod
     def Boolean(targetBody : Body, toolBodies : List[Body]) -> "Feature":

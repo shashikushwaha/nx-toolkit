@@ -1,4 +1,5 @@
 import sys
+from typing import cast
 import NXOpen
 from .displayable_object import DisplayableObject
 
@@ -9,7 +10,9 @@ class Edge(DisplayableObject):
 
     @property
     def nx_object(self) -> NXOpen.Edge:
-        return super().nx_object
+        return cast(NXOpen.Edge, super().nx_object)
+    
+
 
 
 

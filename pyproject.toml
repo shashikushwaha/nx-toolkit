@@ -3,7 +3,7 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "nxtoolkit"
+name = "nxkit"
 version = "0.1.0"
 description = "Python toolkit for Siemens NXOpen"
 readme = "README.md"
