@@ -2,9 +2,10 @@ import sys
 from typing import cast
 import NXOpen
 from .displayable_object import DisplayableObject
+from .icurve import ICurve
 
 
-class Edge(DisplayableObject):
+class Edge(DisplayableObject, ICurve):
     def __init__(self, nxEdge ):
         super().__init__(nxEdge)
 

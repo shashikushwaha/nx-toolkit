@@ -2,8 +2,9 @@ import sys
 import NXOpen
 from typing import List, cast
 from .displayable_object import DisplayableObject
+from .isurface import ISurface
 
-class Face(DisplayableObject):
+class Face(DisplayableObject, ISurface):
     def __init__(self, nxDisplayableObject):
         super().__init__(nxDisplayableObject)
 

@@ -1,16 +1,16 @@
-# NXKit
+# nxopenkit
 
 > Pythonic NX automation built on top of Siemens NXOpen.
 
-NXKit is an open-source Python framework that simplifies automation and customisation in Siemens NX.
+nxopenkit is an open-source Python framework that simplifies automation and customisation in Siemens NX.
 
-Built on top of the NX Open API, NXKit provides a clean, intuitive, and productivity-focused interface that helps engineers and developers automate NX workflows without dealing with the complexity of native NXOpen programming.
+Built on top of the NX Open API, nxopenkit provides a clean, intuitive, and productivity-focused interface that helps engineers and developers automate NX workflows without dealing with the complexity of native NXOpen programming.
 
 Instead of spending time creating builders, navigating object collections, and managing repetitive API patterns, you can focus on solving engineering problems and building robust automation solutions.
 
 ---
 
-## Why NXKit?
+## Why nxopenkit?
 
 NXOpen is incredibly powerful, but even simple operations often require a large amount of boilerplate code.
 
@@ -24,10 +24,10 @@ for body in work_part.Bodies:
     print(body.Name)
 ```
 
-### NXKit
+### nxopenkit
 
 ```python
-import nxkit as nx
+import nxopenkit as nx
 
 part = nx.active_part()
 
@@ -35,7 +35,7 @@ for body in part.bodies():
     print(body.name)
 ```
 
-NXKit reduces complexity while preserving access to the full capabilities of NXOpen.
+nxopenkit reduces complexity while preserving access to the full capabilities of NXOpen.
 
 ---
 
@@ -58,7 +58,7 @@ NXKit reduces complexity while preserving access to the full capabilities of NXO
 
 ### Pythonic
 
-NXKit should feel natural to Python developers.
+nxopenkit should feel natural to Python developers.
 
 ```python
 body.name
@@ -97,7 +97,7 @@ Build a foundation for larger automation frameworks, custom applications, and re
 ## Installation
 
 ```bash
-pip install nxkit
+pip install nxopenkit
 ```
 
 ---
@@ -106,7 +106,7 @@ pip install nxkit
 
 ### Siemens NX Required
 
-NXKit is a wrapper around Siemens NXOpen and requires:
+nxopenkit is a wrapper around Siemens NXOpen and requires:
 
 - Siemens NX installation
 - Valid Siemens NX license
@@ -114,25 +114,25 @@ NXKit is a wrapper around Siemens NXOpen and requires:
 
 > **Important**
 >
-> NXKit does not replace Siemens NX and does not contain any Siemens NX functionality itself.
+> nxopenkit does not replace Siemens NX and does not contain any Siemens NX functionality itself.
 >
-> The library communicates with the NX Open API provided by Siemens NX. Without a licensed NX installation, NXKit cannot access NX models, assemblies, drawings, or geometry data.
+> The library communicates with the NX Open API provided by Siemens NX. Without a licensed NX installation, nxopenkit cannot access NX models, assemblies, drawings, or geometry data.
 
 ### Architecture
 
 ```text
 Your Python Script
-        │
-        ▼
-    NXKit
-        │
-        ▼
+        â”‚
+        â–¼
+    nxopenkit
+        â”‚
+        â–¼
       NXOpen
-        │
-        ▼
+        â”‚
+        â–¼
     Siemens NX
-        │
-        ▼
+        â”‚
+        â–¼
      NX License
 ```
 
@@ -143,7 +143,7 @@ Your Python Script
 ### Access the Active Part
 
 ```python
-import nxkit as nx
+import nxopenkit as nx
 
 part = nx.active_part()
 
@@ -153,7 +153,7 @@ print(part.name)
 ### List All Bodies
 
 ```python
-import nxkit as nx
+import nxopenkit as nx
 
 part = nx.active_part()
 
@@ -180,7 +180,7 @@ part.save()
 ## Example
 
 ```python
-import nxkit as nx
+import nxopenkit as nx
 
 part = nx.active_part()
 
@@ -201,28 +201,28 @@ nx.message("Operation completed.")
 ## Planned Package Structure
 
 ```text
-nxkit/
-│
-├── session
-├── geometry
-├── sketches
-├── features
-├── assemblies
-├── drafting
-├── selection
-├── ui
-├── utils
-└── constants
+nxopenkit/
+â”‚
+â”œâ”€â”€ session
+â”œâ”€â”€ geometry
+â”œâ”€â”€ sketches
+â”œâ”€â”€ features
+â”œâ”€â”€ assemblies
+â”œâ”€â”€ drafting
+â”œâ”€â”€ selection
+â”œâ”€â”€ ui
+â”œâ”€â”€ utils
+â””â”€â”€ constants
 ```
 
 Future expansions:
 
 ```text
-nxkit.cam
-nxkit.cae
-nxkit.sheetmetal
-nxkit.measure
-nxkit.pdm
+nxopenkit.cam
+nxopenkit.cae
+nxopenkit.sheetmetal
+nxopenkit.measure
+nxopenkit.pdm
 ```
 
 ---
@@ -287,7 +287,7 @@ Please read the Contributing Guide before submitting a pull request.
 
 ## Disclaimer
 
-NXKit is an independent open-source project and is not affiliated with, endorsed by, or maintained by Siemens Digital Industries Software.
+nxopenkit is an independent open-source project and is not affiliated with, endorsed by, or maintained by Siemens Digital Industries Software.
 
 Siemens NX and NX Open are trademarks of Siemens Digital Industries Software or their respective owners.
 
@@ -295,7 +295,7 @@ Siemens NX and NX Open are trademarks of Siemens Digital Industries Software or 
 
 ## Vision
 
-NXKit aims to become the easiest and most productive way to automate Siemens NX with Python.
+nxopenkit aims to become the easiest and most productive way to automate Siemens NX with Python.
 
 Our mission is simple:
 
@@ -311,4 +311,4 @@ See the `LICENSE` file for more information.
 
 ---
 
-# Write less NXOpen. Build more with NXKit.
+# Write less NXOpen. Build more with nxopenkit.

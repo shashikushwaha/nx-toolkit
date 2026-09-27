@@ -12,8 +12,8 @@
         "test_*.py"
     ],
     "python.languageServer": "Pylance",
-    "python-envs.defaultEnvManager": "ms-python.python:system",
-    "python-envs.defaultPackageManager": "ms-python.python:pip",
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
     "python.pythonPath": "C:\\Users\\User\\.conda\\envs\\myenv36\\python.exe",
 		
 
