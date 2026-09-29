@@ -38,12 +38,12 @@ class Part(NamedObject) :
         return NXOpen.UF.UFSession.GetUFSession()
 
     @staticmethod
-    def work_part() -> NXOpen.Part:
+    def work_part() -> "Part":
         workPart : NXOpen.Part = Part.session().Parts.Work
         if(workPart is None):
             raise ValueError("No work part found. check NX License.")
         return workPart
-
+ 
     @staticmethod
     def open_part(filePath)-> "Part":
         results = Part.session().Parts.OpenActiveDisplay(filePath, NXOpen.DisplayPartOption.AllowAdditional)

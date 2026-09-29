@@ -3,7 +3,7 @@
     "testing.alwaysRevealTestOnStateChange": true,
     "testing.followRunningTest": true,
     "python.testing.pytestEnabled": false,
-	"python.testing.unittestEnabled": true,
+    "python.testing.unittestEnabled": true,
     "python.testing.unittestArgs": [
         "-v",
         "-s",
@@ -12,9 +12,7 @@
         "test_*.py"
     ],
     "python.languageServer": "Pylance",
+    "python.defaultInterpreterPath": "C:\\Users\\shash.DESKTOP-1PD653P\\.conda\\envs\\nx2007\\python.exe",
     "python-envs.defaultEnvManager": "ms-python.python:conda",
-    "python-envs.defaultPackageManager": "ms-python.python:conda",
-    "python.pythonPath": "C:\\Users\\User\\.conda\\envs\\myenv36\\python.exe",
-		
-
+    "python-envs.defaultPackageManager": "ms-python.python:conda"
 }

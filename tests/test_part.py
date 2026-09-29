@@ -2,7 +2,6 @@ import unittest
 import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-from build.lib.nxopenkit.core.body import Body
 from nxopenkit import Part
 # from nxopenkit.core import part
 
@@ -34,7 +33,7 @@ class TestPart(unittest.TestCase):
     def test_get_displayable_objects(self):
         self.open_test_part('face.prt')
         all_displayables = Part.displayable_objects()
-        self.assertGreater(len(all_displayables), 0)
+        self.assertEqual(len(all_displayables), 40)
         self.assertTrue(all(obj.nx_object is not None for obj in all_displayables))
     
     def test_get_part(self):
@@ -80,19 +79,19 @@ class TestPart(unittest.TestCase):
         self.open_test_part('part.prt')
         datum_plane = Part.datum_planes()
         self.assertEqual(len(datum_plane), 19)
-        # self.assertIsNotNone(datum_plane[0].nx_object)
+        self.assertIsNotNone(datum_plane[0].nx_object)
 
     def test_get_csys(self):
         self.open_test_part('part.prt')
         datum_csys = Part.datum_csys()
         self.assertEqual(len(datum_csys), 6)
-        # self.assertIsNotNone(datum_csys[0].nx_object)
+        self.assertIsNotNone(datum_csys[0].nx_object)
 
     def test_get_csys_by_name(self):
         self.open_test_part('part.prt')
         datum_csys = Part.datum_csys("CSYS_01")
         self.assertIsNotNone(datum_csys)
-        # self.assertIsNotNone(datum_csys[0].nx_object)
+        self.assertIsNotNone(datum_csys[0].nx_object)
 
     def test_get_datum_axis(self):
         self.open_test_part('part.prt')
@@ -109,7 +108,7 @@ class TestPart(unittest.TestCase):
         self.open_test_part('part.prt')
         datum_axis = Part.datum_axes("AXIS_01")
         self.assertIsNotNone(datum_axis)
-        # self.assertIsNotNone(datum_axis[0].nx_object)
+        self.assertIsNotNone(datum_axis[0].nx_object)
 
     def test_failed_get_datum_plane_name(self):
         self.open_test_part('part.prt')
@@ -188,8 +187,6 @@ class TestPart(unittest.TestCase):
         self.assertIsNotNone(feature[0])
         self.assertIsNotNone(feature[0].nx_object)
 
-
- 
 
 if __name__ == '__main__':
     unittest.main()        

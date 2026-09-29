@@ -10,8 +10,8 @@ if ugii_base_dir:
 
 import NXOpen
 
-from .core import Body, Edge, Face, Feature, ICurve, Part
-
+from .core import Body, Edge, Face, Feature, ICurve, Part, UFManager
+from .modeling import BooleanBuilder
 __version__ = "0.1.0"
 
-__all__ = ["Body", "Edge", "Face", "Feature", "ICurve", "Part"]
+__all__ = ["Body", "Edge", "Face", "Feature", "ICurve", "Part", "UFManager", "BooleanBuilder" ]

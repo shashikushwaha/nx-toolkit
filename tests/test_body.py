@@ -5,6 +5,7 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 from nxopenkit import Body, Part
 
+
 class TestBody(unittest.TestCase):
     def setUp(self):
         self.filePath = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'test-cases',  'body.prt'))

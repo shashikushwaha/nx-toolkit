@@ -7,8 +7,8 @@
             "type": "shell",
             "command": "python",
             "args": [
-					"C:/Program Files/Siemens/NX 12.0/NXBIN/python/NXOpen.pyd",
-					"C:/Program Files/Siemens/NX 12.0/NXBIN/python/NXOpen_Features.pyd"					
+					"C:/Program Files/Siemens/NX2007/NXBIN/python/NXOpen.pyd",
+					"C:/Program Files/Siemens/NX2007/NXBIN/python/NXOpen_Features.pyd"					
 					]
         }
     ]
