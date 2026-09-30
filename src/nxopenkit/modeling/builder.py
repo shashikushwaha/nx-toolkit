@@ -4,7 +4,7 @@ from .base_builder import BaseBuilder
 
 class Builder(BaseBuilder):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
 
     
     def commit(self) -> List[NXOpen.NXObject]:

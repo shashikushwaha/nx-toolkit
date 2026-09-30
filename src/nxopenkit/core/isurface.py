@@ -8,5 +8,5 @@ class ISurface(ABC):
     
     @property
     @abstractmethod
-    def nx_object(self) -> NXOpen.ISurface:
-        cast(NXOpen.ISurface, super().nx_object)
+    def to_nx(self) -> NXOpen.ISurface:
+        cast(NXOpen.ISurface, super().to_nx)

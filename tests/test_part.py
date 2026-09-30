@@ -17,7 +17,6 @@ class TestPart(unittest.TestCase):
     def test_get_bodies(self):
         self.open_test_part('body.prt')
         allBodies = Part.bodies()
-        print(allBodies[0])
         self.assertEqual(len(allBodies), 3)
 
     def test_get_faces(self):
@@ -27,25 +26,25 @@ class TestPart(unittest.TestCase):
     
     def test_get_edges(self):
         self.open_test_part('face.prt')
-        allfaces = Part.edges()
-        self.assertEqual(len(allfaces), 24)
+        all_edges = Part.edges()
+        self.assertEqual(len(all_edges), 24)
 
     def test_get_displayable_objects(self):
         self.open_test_part('face.prt')
         all_displayables = Part.displayable_objects()
         self.assertEqual(len(all_displayables), 40)
-        self.assertTrue(all(obj.nx_object is not None for obj in all_displayables))
+        self.assertTrue(all(obj.to_nx is not None for obj in all_displayables))
     
     def test_get_part(self):
         self.open_test_part('part.prt')
-        nxPart = self.part1.nx_object
+        nxPart = self.part1.to_nx
         self.assertIsNotNone(nxPart)       
 
     def test_get_body_name(self):
         self.open_test_part('named-object.prt')
         body = Part.bodies("BODY_01")
         self.assertIsNotNone(body)   
-        self.assertIsNotNone(body[0].nx_object)
+        self.assertIsNotNone(body[0].to_nx)
     
     def test_failed_get_body_name(self):
         self.open_test_part('named-object.prt')
@@ -62,7 +61,7 @@ class TestPart(unittest.TestCase):
         self.open_test_part('points.prt')
         point = Part.points("POINT_04")
         self.assertIsNotNone(point)
-        self.assertIsNotNone(point[0].nx_object)
+        self.assertIsNotNone(point[0].to_nx)
 
     def test_get_curve(self):
         self.open_test_part('part.prt')
@@ -73,25 +72,25 @@ class TestPart(unittest.TestCase):
         self.open_test_part('part.prt')
         curve = Part.curves("CURVE_01")
         self.assertIsNotNone(curve)
-        self.assertIsNotNone(curve[0].nx_object)
+        self.assertIsNotNone(curve[0].to_nx)
 
     def test_get_datum_plane(self):
         self.open_test_part('part.prt')
         datum_plane = Part.datum_planes()
         self.assertEqual(len(datum_plane), 19)
-        self.assertIsNotNone(datum_plane[0].nx_object)
+        self.assertIsNotNone(datum_plane[0].to_nx)
 
     def test_get_csys(self):
         self.open_test_part('part.prt')
         datum_csys = Part.datum_csys()
         self.assertEqual(len(datum_csys), 6)
-        self.assertIsNotNone(datum_csys[0].nx_object)
+        self.assertIsNotNone(datum_csys[0].to_nx)
 
     def test_get_csys_by_name(self):
         self.open_test_part('part.prt')
         datum_csys = Part.datum_csys("CSYS_01")
         self.assertIsNotNone(datum_csys)
-        self.assertIsNotNone(datum_csys[0].nx_object)
+        self.assertIsNotNone(datum_csys[0].to_nx)
 
     def test_get_datum_axis(self):
         self.open_test_part('part.prt')
@@ -102,13 +101,13 @@ class TestPart(unittest.TestCase):
         self.open_test_part('part.prt')
         datum_plane = Part.datum_planes("DATUM_02")
         self.assertIsNotNone(datum_plane)
-        self.assertIsNotNone(datum_plane[0].nx_object)
+        self.assertIsNotNone(datum_plane[0].to_nx)
 
     def test_datum_axis_name(self):
         self.open_test_part('part.prt')
         datum_axis = Part.datum_axes("AXIS_01")
         self.assertIsNotNone(datum_axis)
-        self.assertIsNotNone(datum_axis[0].nx_object)
+        self.assertIsNotNone(datum_axis[0].to_nx)
 
     def test_failed_get_datum_plane_name(self):
         self.open_test_part('part.prt')
@@ -162,19 +161,19 @@ class TestPart(unittest.TestCase):
         self.open_test_part('face.prt')
         displayable = Part.displayable_objects("FACE_01")
         self.assertIsNotNone(displayable[0])
-        self.assertIsNotNone(displayable[0].nx_object)
+        self.assertIsNotNone(displayable[0].to_nx)
 
     def test_get_displayable_object_name_body(self):
         self.open_test_part('named-object.prt')
         displayable = Part.displayable_objects("BODY_01")
         self.assertIsNotNone(displayable[0])
-        self.assertIsNotNone(displayable[0].nx_object)
+        self.assertIsNotNone(displayable[0].to_nx)
 
     def test_get_displayable_object_name_point(self):
         self.open_test_part('points.prt')
         displayable = Part.displayable_objects("POINT_01")
         self.assertIsNotNone(displayable[0])
-        self.assertIsNotNone(displayable[0].nx_object)
+        self.assertIsNotNone(displayable[0].to_nx)
 
     def test_get_feature(self):
         self.open_test_part('part.prt')
@@ -185,7 +184,7 @@ class TestPart(unittest.TestCase):
         self.open_test_part('part.prt')
         feature = Part.features("CUBE")
         self.assertIsNotNone(feature[0])
-        self.assertIsNotNone(feature[0].nx_object)
+        self.assertIsNotNone(feature[0].to_nx)
 
 
 if __name__ == '__main__':

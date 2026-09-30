@@ -1,5 +1,6 @@
 import sys
 import math
+import os
 
 # from numpy import var
 import NXOpen
@@ -26,8 +27,8 @@ class Part(NamedObject) :
         super().__init__(nxOpenPart)    
 
     @property
-    def nx_object(self) -> NXOpen.Part:
-        return cast(NXOpen.Part, super().nx_object)
+    def to_nx(self) -> NXOpen.Part:
+        return cast(NXOpen.Part, super().to_nx)
 
     @staticmethod
     def session() -> NXOpen.Session:
@@ -42,14 +43,22 @@ class Part(NamedObject) :
         workPart : NXOpen.Part = Part.session().Parts.Work
         if(workPart is None):
             raise ValueError("No work part found. check NX License.")
-        return workPart
+        return Part(workPart)
  
     @staticmethod
     def open_part(filePath)-> "Part":
         results = Part.session().Parts.OpenActiveDisplay(filePath, NXOpen.DisplayPartOption.AllowAdditional)
         openPart = results[0]
         part1 = Part(openPart)   
-        return part1    
+        return part1   
+
+    @staticmethod
+    def save_as(file : str, deleteExistingFile : Optional[bool] = True):      
+        if deleteExistingFile and os.path.exists(file):
+            os.remove(file)
+        saveStatus = Part.work_part().to_nx.SaveAs(file)
+        saveStatus.Dispose()
+
     
     @staticmethod
     def close_all():
@@ -61,13 +70,13 @@ class Part(NamedObject) :
 
     @staticmethod
     def bodies(name: Optional[str] = None) -> List[Body]:
-        bodiesCol = Part.work_part().Bodies
+        bodiesCol = Part.work_part().to_nx.Bodies
         all_bodies = []
         for one_body in bodiesCol:
             all_bodies.append(Body(one_body))
         if name is None:
             return all_bodies
-        matching_bodies = [body for body in all_bodies if body.Name == name]
+        matching_bodies = [body for body in all_bodies if body.name == name]
         if not matching_bodies:
             raise ValueError(f"{name} not found.")
         return matching_bodies
@@ -75,10 +84,10 @@ class Part(NamedObject) :
     @staticmethod
     def faces(name: Optional[str] = None) -> List[Face]:
         all_bodies = Part.bodies()
-        all_faces = [Face(face) for body in all_bodies for face in body.nx_object.GetFaces()]
+        all_faces = [Face(face) for body in all_bodies for face in body.to_nx.GetFaces()]
         if name is None:
             return all_faces
-        matching_faces = [face for face in all_faces if face.Name == name]
+        matching_faces = [face for face in all_faces if face.name == name]
         if not matching_faces:
             raise ValueError(f"{name} not found.")
         return matching_faces
@@ -87,14 +96,14 @@ class Part(NamedObject) :
     def edges(name: Optional[str] = None) -> List[Edge]:
         all_edges = [
             Edge(edge)
-            for body in Part.work_part().Bodies
+            for body in Part.work_part().to_nx.Bodies
             for face in body.GetFaces()
             for edge in face.GetEdges()
         ]
         if name is None:
             return all_edges
 
-        matching_edges = [edge for edge in all_edges if edge.Name == name]
+        matching_edges = [edge for edge in all_edges if edge.name == name]
         if not matching_edges:
             raise ValueError(f"{name} not found.") 
         return matching_edges
@@ -102,13 +111,13 @@ class Part(NamedObject) :
     @staticmethod
     def points(name: Optional[str] = None) -> List[Point]:
         work_part = Part.work_part()
-        point_collection : NXOpen.PointCollection = work_part.Points
+        point_collection : NXOpen.PointCollection = work_part.to_nx.Points
         all_points = []
         for one_point in point_collection:
             all_points.append(Point(one_point))
         if name is None:
             return all_points
-        matching_points = [point for point in all_points if point.Name == name]
+        matching_points = [point for point in all_points if point.name == name]
         if not matching_points:
             raise ValueError(f"{name} not found.")
         return matching_points
@@ -127,7 +136,7 @@ class Part(NamedObject) :
         all_displayables.extend(Part.datum_axes())
         if name is None:
             return all_displayables
-        matching_displayables = [obj for obj in all_displayables if obj.Name == name]
+        matching_displayables = [obj for obj in all_displayables if obj.name == name]
         if not matching_displayables:
             raise ValueError(f"{name} not found.")
         return matching_displayables
@@ -136,67 +145,67 @@ class Part(NamedObject) :
     
     @staticmethod
     def features(name: Optional[str] = None) -> List[NXOpen.Features.Feature]:
-        feature_collection : NXOpen.Features.FeatureCollection = Part.work_part().Features
+        feature_collection : NXOpen.Features.FeatureCollection = Part.work_part().to_nx.Features
         all_features = []
         for one_feature in feature_collection:
             all_features.append(Feature(one_feature))
         if name is None:
             return all_features
-        matching_features = [feature for feature in all_features if feature.Name == name]
+        matching_features = [feature for feature in all_features if feature.name == name]
         if not matching_features:
             raise ValueError(f"{name} not found.")
         return matching_features
 
     @staticmethod
     def curves(name: Optional[str] = None) -> List[Curve]:
-        all_collection : NXOpen.CurveCollection = Part.work_part().Curves
+        all_collection : NXOpen.CurveCollection = Part.work_part().to_nx.Curves
         all_curves = []
         for one_curve in all_collection:
             all_curves.append(Curve(one_curve))
         if name is None:
             return all_curves
-        matching_curves = [curve for curve in all_curves if curve.Name == name]
+        matching_curves = [curve for curve in all_curves if curve.name == name]
         if not matching_curves:
             raise ValueError(f"{name} not found.")
         return matching_curves
 
     @staticmethod
     def datum_planes(name: Optional[str] = None) -> List[DatumPlane]:
-        datum_coll : NXOpen.DatumCollection = Part.work_part().Datums
+        datum_coll : NXOpen.DatumCollection = Part.work_part().to_nx.Datums
         allDatumPlanes = []
         for one_datum_plane in datum_coll:
             if isinstance(one_datum_plane, NXOpen.DatumPlane):
                 allDatumPlanes.append(DatumPlane(one_datum_plane))
         if name is None:
             return allDatumPlanes
-        matching_planes = [plane for plane in allDatumPlanes if plane.Name == name]
+        matching_planes = [plane for plane in allDatumPlanes if plane.name == name]
         if not matching_planes:
             raise ValueError(f"{name} not found.")
         return matching_planes
 
     @staticmethod
     def datum_csys(name: Optional[str] = None) -> List[CoordinateSystem]:
-        datum_csys : NXOpen.CoordinateSystem = Part.work_part().CoordinateSystems
+        datum_csys : NXOpen.CoordinateSystem = Part.work_part().to_nx.CoordinateSystems
         allDatumCsys = []
         for one_datum_csys in datum_csys:
             allDatumCsys.append(CoordinateSystem(one_datum_csys))
         if name is None:
             return allDatumCsys
-        matching_csys = [csys for csys in allDatumCsys if csys.Name == name]
+        matching_csys = [csys for csys in allDatumCsys if csys.name == name]
         if not matching_csys:
             raise ValueError(f"{name} not found.")
         return matching_csys
 
     @staticmethod
     def datum_axes(name: Optional[str] = None) -> List[DatumAxis]:
-        datum_coll : NXOpen.DatumCollection = Part.work_part().Datums
+        datum_coll : NXOpen.DatumCollection = Part.work_part().to_nx.Datums
         all_datum_axes = []
         for one_datum_axis in datum_coll:
             if isinstance(one_datum_axis, NXOpen.DatumAxis):
                 all_datum_axes.append(DatumAxis(one_datum_axis))
         if name is None:
             return all_datum_axes
-        matching_axes = [axis for axis in all_datum_axes if axis.Name == name]
+        matching_axes = [axis for axis in all_datum_axes if axis.name == name]
         if not matching_axes:
             raise ValueError(f"{name} not found.")
         return matching_axes

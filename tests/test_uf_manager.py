@@ -27,20 +27,20 @@ class TestUFManager(unittest.TestCase):
 		Part.close_all()
 
 	def body_tag(self):
-		bodies = list(self.work_part.Bodies)
+		bodies = list(self.work_part.bodies())
 		self.assertTrue(bodies, "part.prt must contain a body")
-		return bodies[0].Tag
+		return bodies[0].tag
 
 	def face_tag(self):
-		for body in self.work_part.Bodies:
-			faces = body.GetFaces()
+		for body in self.work_part.bodies():
+			faces = body.to_nx.GetFaces()
 			if faces:
 				return faces[0].Tag
 		self.fail("part.prt must contain a face")
 
 	def edge_tag(self):
-		for body in self.work_part.Bodies:
-			for face in body.GetFaces():
+		for body in self.work_part.bodies():
+			for face in body.to_nx.GetFaces():
 				edges = face.GetEdges()
 				if edges:
 					return edges[0].Tag
@@ -179,7 +179,7 @@ class TestUFManager(unittest.TestCase):
 			UFManager.delete_object(arc_tag)
 
 	def test_ask_point_data(self):
-		point = self.work_part.Points.CreatePoint(NXOpen.Point3d(0.0, 0.0, 0.0))
+		point = self.work_part.to_nx.Points.CreatePoint(NXOpen.Point3d(0.0, 0.0, 0.0))
 		try:
 			self.assertIsNotNone(UFManager.ask_point_data(point.Tag))
 		finally:
@@ -196,7 +196,7 @@ class TestUFManager(unittest.TestCase):
 		UFManager.delete_object(arc_tag)
 
 	def test_ask_part_units(self):
-		self.assertIsNotNone(UFManager.ask_part_units(self.work_part.Tag))
+		self.assertIsNotNone(UFManager.ask_part_units(self.work_part.tag))
 
 	def test_ask_work_coordinate_system(self):
 		self.assertIsNotNone(UFManager.ask_work_coordinate_system())

@@ -1,21 +1,22 @@
 import NXOpen
 import NXOpen.Features
-from .base_builder import BaseBuilder
+from .builder import Builder
+from nxopenkit import Feature
 
 
-class FeatureBuilder(BaseBuilder):
+class FeatureBuilder(Builder) : 
     def __init__(self):
-        self.feature_builder : NXOpen.Features.FeatureBuilder = None
+        self.feature_builder : NXOpen.Features.FeatureBuilder = None        
+        super().__init__()
         self.builder = self.feature_builder
-        super().__init__(self)
 
-    def commit_feature(self):
+    def commit_feature(self) -> Feature:
         should_destroy = True
         try:
             feature = self.feature_builder.CommitFeature()
             if feature is None:
                 raise ValueError("CommitFeature returned no feature")
-            return feature
+            return Feature(feature)
         except NXOpen.NXException as error:
             self.undo_mark()
             should_destroy = False

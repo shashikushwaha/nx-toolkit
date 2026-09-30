@@ -10,8 +10,12 @@ class Edge(DisplayableObject, ICurve):
         super().__init__(nxEdge)
 
     @property
-    def nx_object(self) -> NXOpen.Edge:
-        return cast(NXOpen.Edge, super().nx_object)
+    def to_nx(self) -> NXOpen.Edge:
+        return cast(NXOpen.Edge, super().to_nx)
+
+    def get_body(self) -> "Body":
+        from .body import Body
+        return Body(self.to_nx.GetBody())
     
 
 

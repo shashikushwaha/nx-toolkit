@@ -10,8 +10,8 @@ class DatumPlane(DisplayableObject, ISurface):
         super().__init__(nxDatumPlane)
 
     @property
-    def nx_object(self) -> NXOpen.DatumPlane:
-        return cast(NXOpen.DatumPlane, super().nx_object)
+    def to_nx(self) -> NXOpen.DatumPlane:
+        return cast(NXOpen.DatumPlane, super().to_nx)
     
 
 

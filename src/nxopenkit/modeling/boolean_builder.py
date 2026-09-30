@@ -1,40 +1,92 @@
+from __future__ import annotations
+
+import math
+from collections.abc import Sequence
+from typing import TYPE_CHECKING
+
 import NXOpen
 import NXOpen.Features
 import NXOpen.GeometricUtilities
-import math
-from typing import List, Optional
-from .feature_builder import FeatureBuilder
-from  nxopenkit.core import Body, Part, Feature
 
+from .feature_builder import FeatureBuilder
+from nxopenkit.core.part import Part
+
+if TYPE_CHECKING:
+    from nxopenkit.core.body import Body
+
+
+KeepRemoveOption = (
+    NXOpen.GeometricUtilities.BooleanRegionSelect.KeepRemoveOption
+)
 
 
 class BooleanBuilder(FeatureBuilder):
-    def __init__(self, target_body: Body, tool_bodies : List[Body], boolean_type : Optional[NXOpen.Features.Feature.BooleanType] = NXOpen.Features.Feature.BooleanType.Unite):
+    def __init__(
+        self,
+        target_body: Body,
+        tool_bodies: Sequence[Body],
+        boolean_type: NXOpen.Features.Feature.BooleanType = (
+            NXOpen.Features.Feature.BooleanType.Unite
+        ),
+    ):
+        if not tool_bodies:
+            raise ValueError("At least one tool body is required.")
+        if boolean_type is None:
+            raise ValueError("boolean_type cannot be None.")
+
+        super().__init__()
+
         self.target_body = target_body
-        self.tool_bodies = tool_bodies
+        self.tool_bodies = list(tool_bodies)
         self.boolean_type = boolean_type
-        super().__init__(self)
-        workPart : NXOpen.Part = Part.work_part()
-        booleanBuilder1: NXOpen.Feature.BooleanBuilder = workPart.Features.CreateBooleanBuilderUsingCollector(NXOpen.Features.BooleanFeature.Null)
-        self.feature_builder = booleanBuilder1
-        scCollector1 : NXOpen.ScCollector = booleanBuilder1.ToolBodyCollector        
-        booleanRegionSelect1  = booleanBuilder1.BooleanRegionSelect        
-        booleanBuilder1.Tolerance = self.distance_tolerance        
-        booleanBuilder1.Operation = self.boolean_type
-        added1 = booleanBuilder1.Targets.Add(self.target_body)             
-        targets1 = [NXOpen.TaggedObject.Null] * 1 
-        targets1[0] = target_body.nx_object
-        booleanRegionSelect1.AssignTargets(targets1)        
-        scCollector2 = workPart.ScCollectors.CreateCollector()        
-        bodies1 = [NXOpen.Body.Null] * 1 
-        body2 = workPart.Bodies.FindObject("BLOCK(3)")
-        bodies1[0] = body2
-        bodyDumbRule1 = workPart.ScRuleFactory.CreateRuleBodyDumb(tool_bodies, True)
-        
-        rules1 = [None] * 1 
-        rules1[0] = bodyDumbRule1
-        scCollector2.ReplaceRules(rules1, False)
-        booleanBuilder1.ToolBodyCollector = scCollector2       
-        # nXObject1 = booleanBuilder1.Commit()        
-        # booleanBuilder1.Destroy() 
-        # return nXObject1       
+
+        work_part = Part.work_part().to_nx
+        target_nx = target_body.to_nx
+        tool_nx_bodies = [body.to_nx for body in self.tool_bodies]
+
+        self.booleanBuilder1 = (
+            work_part.Features.CreateBooleanBuilderUsingCollector(
+                NXOpen.Features.BooleanFeature.Null
+            )
+        )
+        self.feature_builder = self.booleanBuilder1
+        self.builder = self.booleanBuilder1
+        self.booleanBuilder1.Tolerance = self.distance_tolerance
+        self.booleanBuilder1.Operation = boolean_type
+        self.booleanBuilder1.Targets.Add(target_nx)
+
+        self.booleanBuilder1.BooleanRegionSelect.AssignTargets([target_nx])
+
+        collector = work_part.ScCollectors.CreateCollector()
+        body_rule = work_part.ScRuleFactory.CreateRuleBodyDumb(
+            tool_nx_bodies, True
+        )
+        collector.ReplaceRules([body_rule], False)
+        self.booleanBuilder1.ToolBodyCollector = collector
+
+    # def region(
+    #     self,
+    #     keep_remove_target: KeepRemoveOption = KeepRemoveOption.Keep,
+    #     keep_remove_tool: KeepRemoveOption = KeepRemoveOption.Keep,
+    # ) -> BooleanBuilder:
+    #     region_select = self.booleanBuilder1.BooleanRegionSelect
+    #     region_select.KeepRemoveTargetMethod = keep_remove_target
+    #     region_select.KeepRemoveToolMethod = keep_remove_tool
+    #     return self
+
+    def settings(
+        self,
+        tolerance: float | None = None,
+        keep_target: bool = False,
+        keep_tool: bool = False,
+        convert_to_sew: bool = False,
+    ) -> BooleanBuilder:
+        if tolerance is not None:
+            if not math.isfinite(tolerance) or tolerance <= 0:
+                raise ValueError("tolerance must be a finite positive number.")
+            self.booleanBuilder1.Tolerance = tolerance
+
+        self.booleanBuilder1.CopyTargets = keep_target
+        self.booleanBuilder1.CopyTools = keep_tool
+        self.booleanBuilder1.ConvertToSew = convert_to_sew
+        return self

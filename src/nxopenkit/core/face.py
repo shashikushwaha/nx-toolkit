@@ -3,14 +3,23 @@ import NXOpen
 from typing import List, cast
 from .displayable_object import DisplayableObject
 from .isurface import ISurface
+from .edge import Edge
 
 class Face(DisplayableObject, ISurface):
     def __init__(self, nxDisplayableObject):
         super().__init__(nxDisplayableObject)
 
     @property
-    def nx_object(self) -> NXOpen.Face:
-        return cast(NXOpen.Face, super().nx_object)
+    def to_nx(self) -> NXOpen.Face:
+        return cast(NXOpen.Face, super().to_nx)
+
+    def get_edges(self) -> List[Edge]:
+        return [Edge(edge) for edge in self.get_edges()]
+
+    def get_body(self) -> "Body":
+        from .body import Body
+        return Body(self.to_nx.GetBody())
+
     
 
 

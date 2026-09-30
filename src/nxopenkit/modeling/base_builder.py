@@ -12,9 +12,8 @@ class BaseBuilder():
         self.builder : NXOpen.Builder = None
         self.undo_mark_id : int = None
         self.undo_mark_name : str = ""
-        self.distance_tolerance : float = self.work_part.nx_object.Preferences.Modeling.DistanceToleranceData
-        self.angle_tolerance : float = self.work_part.nx_object.Preferences.Modeling.AngleToleranceData
-
+        self.distance_tolerance : float = self.work_part.to_nx.Preferences.Modeling.DistanceToleranceData
+        self.angle_tolerance : float = self.work_part.to_nx.Preferences.Modeling.AngleToleranceData
 
     def destroy(self):
         if(self.builder is not None):

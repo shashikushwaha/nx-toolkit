@@ -9,8 +9,8 @@ class CoordinateSystem(DisplayableObject):
         super().__init__(nxCsys)
 
     @property
-    def nx_object(self) -> NXOpen.CoordinateSystem:
-        return cast(NXOpen.CoordinateSystem, super().nx_object)
+    def to_nx(self) -> NXOpen.CoordinateSystem:
+        return cast(NXOpen.CoordinateSystem, super().to_nx)
     
 
 

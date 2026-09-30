@@ -15,15 +15,15 @@ class TestNamedObject(unittest.TestCase):
         Part.close_all()
 
     def test_nammed_object(self):
-        nxPart = self.part1.nx_object
+        nxPart = self.part1.to_nx
         self.assertIsNotNone(nxPart)   
     
     def test_tagged_object(self):
-        nxPart = self.part1.nx_object
+        nxPart = self.part1.to_nx
         self.assertIsNotNone(nxPart)   
 
     def test_nx_object(self):
-        self.assertIsNotNone(self.part1.nx_object)
+        self.assertIsNotNone(self.part1.to_nx)
 
     def test_tag(self):
         nxPart = self.part1.tag 
@@ -31,5 +31,5 @@ class TestNamedObject(unittest.TestCase):
 
     def test_name(self):
         all_bodies = Part.bodies(); 
-        name = all_bodies[0].Name
+        name = all_bodies[0].name
         self.assertEqual(name, "BODY_01")  

@@ -8,5 +8,5 @@ class ICurve(ABC):
     
     @property
     @abstractmethod
-    def nx_object(self) -> NXOpen.ICurve:
-        cast(NXOpen.ICurve, super().nx_object)
+    def to_nx(self) -> NXOpen.ICurve:
+        cast(NXOpen.ICurve, super().to_nx)

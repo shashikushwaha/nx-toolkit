@@ -11,5 +11,5 @@ class Feature(NamedObject):
         super().__init__(nxFeature)
 
     @property
-    def nx_object(self) -> NXOpen_Features.Feature:
-        return cast(NXOpen_Features.Feature, super().nx_object)
+    def to_nx(self) -> NXOpen_Features.Feature:
+        return cast(NXOpen_Features.Feature, super().to_nx)

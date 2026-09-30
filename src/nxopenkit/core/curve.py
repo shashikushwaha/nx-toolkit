@@ -10,8 +10,8 @@ class Curve(DisplayableObject, ICurve):
         super().__init__(nxCurve)
 
     @property
-    def nx_object(self) -> NXOpen.Curve:
-        return cast(NXOpen.Curve, super().nx_object)
+    def to_nx(self) -> NXOpen.Curve:
+        return cast(NXOpen.Curve, super().to_nx)
 
 
 

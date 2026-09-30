@@ -8,9 +8,10 @@ class DisplayableObject(NamedObject):
     def __init__(self, nxDisplayableObject : NXOpen.DisplayableObject):
         super().__init__(nxDisplayableObject)
 
+
     @property
-    def nx_object(self) -> NXOpen.DisplayableObject:
-        return cast(NXOpen.DisplayableObject, super().nx_object)
+    def to_nx(self) -> NXOpen.DisplayableObject:
+        return cast(NXOpen.DisplayableObject, super().to_nx)
 
     @staticmethod
     def get_by_name(name: str) -> "DisplayableObject":

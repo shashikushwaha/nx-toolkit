@@ -9,8 +9,8 @@ class Point(DisplayableObject):
         super().__init__(nxPoint)
 
     @property
-    def nx_object(self) -> NXOpen.Point:
-        return cast(NXOpen.Point, super().nx_object)
+    def to_nx(self) -> NXOpen.Point:
+        return cast(NXOpen.Point, super().to_nx)
     
 
 

@@ -10,9 +10,17 @@ class NamedObject(TaggedObject):
         super().__init__(nxobject)
 
     @property
-    def nx_object(self) -> NXOpen.NXObject:
+    def to_nx(self) -> NXOpen.NXObject:
         return cast(NXOpen.NXObject, self.tagged_object)
 
     @property
-    def Name(self) ->str :
-        return self.nx_object.Name
+    def name(self) ->str :
+        return self.to_nx.Name
+
+    @name.setter
+    def name(self, value):
+        if not value:
+            raise ValueError("Name cannot be empty")
+        self.to_nx.SetName(value)
+
+    
