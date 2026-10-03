@@ -10,8 +10,28 @@ if ugii_base_dir:
 
 import NXOpen
 
-from .core import Body, Edge, Face, Feature, ICurve, Part, UFManager
-from .modeling import BooleanBuilder
+from .core import Body, Edge, Face, Feature, ICurve, Part, UFManager, DatumAxis, DatumPlane, CoordinateSystem, ISurface, DisplayableObject, NamedObject, TaggedObject, Point
+from .modeling import BooleanBuilder, ExtrudeBuilder
+from .maths import Vector3d
 __version__ = "0.1.0"
 
-__all__ = ["Body", "Edge", "Face", "Feature", "ICurve", "Part", "UFManager", "BooleanBuilder" ]
+__all__ = [
+    "Body", 
+    "Edge",
+    "Face", 
+    "Feature", 
+    "ICurve", 
+    "ISurface",
+    "NamedObject",
+    "TaggedObject",
+    "CoordinateSystem", 
+    "DatumPlane", 
+    "DatumAxis", 
+    "DisplayableObject", 
+    "Part", 
+    "Point", 
+    "UFManager", 
+    "BooleanBuilder",
+    "ExtrudeBuilder", 
+    "Vector3d"
+    ]

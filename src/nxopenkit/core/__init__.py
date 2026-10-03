@@ -13,8 +13,9 @@ from .uf_manager import UFManager
 from .displayable_object import DisplayableObject
 from .named_object import NamedObject
 from .tagged_object import TaggedObject
+from .point import Point
 
 __all__ = ["Body", "Edge", "Face", "Feature", 
            "ICurve", "Part", "UFManager","DatumAxis", 
            "DatumPlane", "CoordinateSystem", "ISurface",
-           "DisplayableObject", "NamedObject", "TaggedObject"]
+           "DisplayableObject", "NamedObject", "TaggedObject", "Point"]

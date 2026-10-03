@@ -44,26 +44,28 @@ class BooleanBuilder(FeatureBuilder):
         target_nx = target_body.to_nx
         tool_nx_bodies = [body.to_nx for body in self.tool_bodies]
 
-        self.booleanBuilder1 = (
+        self._booleanBld = (
             work_part.Features.CreateBooleanBuilderUsingCollector(
                 NXOpen.Features.BooleanFeature.Null
             )
         )
-        self.feature_builder = self.booleanBuilder1
-        self.builder = self.booleanBuilder1
-        self.booleanBuilder1.Tolerance = self.distance_tolerance
-        self.booleanBuilder1.Operation = boolean_type
-        self.booleanBuilder1.Targets.Add(target_nx)
-
-        self.booleanBuilder1.BooleanRegionSelect.AssignTargets([target_nx])
-
+        self.feature_builder = self._booleanBld
+        self.builder = self._booleanBld
+        self._booleanBld.Tolerance = self.distance_tolerance
+        self._booleanBld.Operation = boolean_type
+        self._booleanBld.Targets.Add(target_nx)
+        self._booleanBld.BooleanRegionSelect.AssignTargets([target_nx])
         collector = work_part.ScCollectors.CreateCollector()
         body_rule = work_part.ScRuleFactory.CreateRuleBodyDumb(
             tool_nx_bodies, True
         )
         collector.ReplaceRules([body_rule], False)
-        self.booleanBuilder1.ToolBodyCollector = collector
+        self._booleanBld.ToolBodyCollector = collector
 
+    @property
+    def nx_builder(self) -> NXOpen.Features.BooleanBuilder:
+        return self._booleanBld
+    
     # def region(
     #     self,
     #     keep_remove_target: KeepRemoveOption = KeepRemoveOption.Keep,
@@ -84,9 +86,9 @@ class BooleanBuilder(FeatureBuilder):
         if tolerance is not None:
             if not math.isfinite(tolerance) or tolerance <= 0:
                 raise ValueError("tolerance must be a finite positive number.")
-            self.booleanBuilder1.Tolerance = tolerance
+            self._booleanBld.Tolerance = tolerance
 
-        self.booleanBuilder1.CopyTargets = keep_target
-        self.booleanBuilder1.CopyTools = keep_tool
-        self.booleanBuilder1.ConvertToSew = convert_to_sew
+        self._booleanBld.CopyTargets = keep_target
+        self._booleanBld.CopyTools = keep_tool
+        self._booleanBld.ConvertToSew = convert_to_sew
         return self

@@ -17,13 +17,13 @@ class TestBooleanBuilder(unittest.TestCase):
     def tearDown(self):
         Part.close_all()
 
-    def make_builder(self):
+    def make_builder(self, boolean_type=NXOpen.Features.Feature.BooleanType.Unite):
          self.open_test_part('body.prt')
          target_body = Part.bodies("BODY_01")
          tool_bodies = Part.bodies()
          if target_body[0] in tool_bodies:
             tool_bodies.remove(target_body[0])
-         return BooleanBuilder(target_body[0], tool_bodies, NXOpen.Features.Feature.BooleanType.Unite)
+         return BooleanBuilder(target_body[0], tool_bodies, boolean_type)
 
     def test_rejects_empty_tool_bodies(self):
         with self.assertRaisesRegex(ValueError, "At least one tool body"):
@@ -70,4 +70,18 @@ class TestBooleanBuilder(unittest.TestCase):
         )
         self.assertIs(result, builder)
         feature = builder.commit()
+        self.assertIsNotNone(feature)
+
+    def test_boolean_intersect_and_commit_feature(self):
+        builder = self.make_builder(boolean_type=NXOpen.Features.Feature.BooleanType.Intersect)
+        self.assertEqual(builder.nx_builder.Operation, NXOpen.Features.Feature.BooleanType.Intersect)
+        feature = builder.commit_feature()
+        # filePath = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'test-cases','temp','test.prt'))
+        # Part.save_as(filePath)
+        self.assertIsNotNone(feature)
+
+    def test_boolean_subtract_and_commit_feature(self):
+        builder = self.make_builder(boolean_type=NXOpen.Features.Feature.BooleanType.Subtract)
+        self.assertEqual(builder.nx_builder.Operation, NXOpen.Features.Feature.BooleanType.Subtract)
+        feature = builder.commit_feature()
         self.assertIsNotNone(feature)

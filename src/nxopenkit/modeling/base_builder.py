@@ -13,6 +13,7 @@ class BaseBuilder():
         self.undo_mark_id : int = None
         self.undo_mark_name : str = ""
         self.distance_tolerance : float = self.work_part.to_nx.Preferences.Modeling.DistanceToleranceData
+        self.chaining_tolerance : float = 0.95*self.distance_tolerance
         self.angle_tolerance : float = self.work_part.to_nx.Preferences.Modeling.AngleToleranceData
 
     def destroy(self):
