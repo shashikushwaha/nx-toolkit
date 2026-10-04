@@ -1,72 +1,91 @@
 import math
 import os
 import sys
-import unittest
 from unittest.mock import patch
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+import pytest
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 from nxopenkit.maths.vector3d import Vector3d
 
+try:
+    import NXOpen  # noqa: F401
+except Exception as exc:  # pragma: no cover
+    pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
 
-class TestVector3d(unittest.TestCase):
-    def setUp(self):
-        self.vector = Vector3d(1, 2, 3)
-        self.other = Vector3d(4, 5, 6)
 
-    def test_repr(self):
-        self.assertEqual(repr(self.vector), "Vector3d(1, 2, 3)")
 
-    def test_to_nx(self):
+
+@pytest.fixture
+def sample_vectors():
+    return Vector3d(1, 2, 3), Vector3d(4, 5, 6)
+
+
+class TestVector3d:
+    def test_repr(self, sample_vectors):
+        vector, _ = sample_vectors
+        assert repr(vector) == "Vector3d(1, 2, 3)"
+
+    def test_to_nx(self, sample_vectors):
+        vector, _ = sample_vectors
         with patch("nxopenkit.maths.vector3d.NXOpen") as nxopen:
-            nx_vector = self.vector.to_nx
-        self.assertIs(nx_vector, nxopen.Vector3d.return_value)
+            nx_vector = vector.to_nx
+        assert nx_vector is nxopen.Vector3d.return_value
         nxopen.Vector3d.assert_called_once_with(1, 2, 3)
 
-    def test_equality(self):
-        self.assertEqual(self.vector, Vector3d(1, 2, 3))
-        self.assertNotEqual(self.vector, self.other)
-        self.assertIs(self.vector.__eq__(object()), NotImplemented)
+    def test_equality(self, sample_vectors):
+        vector, other = sample_vectors
+        assert vector == Vector3d(1, 2, 3)
+        assert vector != other
+        assert vector.__eq__(object()) is NotImplemented
 
-    def test_addition(self):
-        self.assertEqual(self.vector + self.other, Vector3d(5, 7, 9))
-        self.assertIs(self.vector.__add__(object()), NotImplemented)
+    def test_addition(self, sample_vectors):
+        vector, other = sample_vectors
+        assert vector + other == Vector3d(5, 7, 9)
+        assert vector.__add__(object()) is NotImplemented
 
-    def test_subtraction(self):
-        self.assertEqual(self.vector - self.other, Vector3d(-3, -3, -3))
-        self.assertIs(self.vector.__sub__(object()), NotImplemented)
+    def test_subtraction(self, sample_vectors):
+        vector, other = sample_vectors
+        assert vector - other == Vector3d(-3, -3, -3)
+        assert vector.__sub__(object()) is NotImplemented
 
-    def test_multiplication(self):
-        self.assertEqual(self.vector * 2, Vector3d(2, 4, 6))
-        self.assertEqual(self.vector * 0.5, Vector3d(0.5, 1, 1.5))
-        self.assertIs(self.vector.__mul__("2"), NotImplemented)
+    def test_multiplication(self, sample_vectors):
+        vector, _ = sample_vectors
+        assert vector * 2 == Vector3d(2, 4, 6)
+        assert vector * 0.5 == Vector3d(0.5, 1, 1.5)
+        assert vector.__mul__("2") is NotImplemented
 
-    def test_cross_product(self):
-        self.assertEqual(self.vector.cross(self.other), Vector3d(-3, 6, -3))
-        self.assertIs(self.vector.cross(object()), NotImplemented)
+    def test_cross_product(self, sample_vectors):
+        vector, other = sample_vectors
+        assert vector.cross(other) == Vector3d(-3, 6, -3)
+        assert vector.cross(object()) is NotImplemented
 
-    def test_dot_product(self):
-        self.assertEqual(self.vector.dot(self.other), 32)
-        self.assertIs(self.vector.dot(object()), NotImplemented)
+    def test_dot_product(self, sample_vectors):
+        vector, other = sample_vectors
+        assert vector.dot(other) == 32
+        assert vector.dot(object()) is NotImplemented
 
-    def test_magnitude(self):
-        self.assertAlmostEqual(self.vector.magnitude(), math.sqrt(14))
-        self.assertEqual(Vector3d(0, 0, 0).magnitude(), 0)
+    def test_magnitude(self, sample_vectors):
+        vector, _ = sample_vectors
+        assert math.isclose(vector.magnitude(), math.sqrt(14))
+        assert Vector3d(0, 0, 0).magnitude() == 0
 
-    def test_normalize(self):
-        normalized = self.vector.normalize()
-        self.assertAlmostEqual(normalized.magnitude(), 1)
-        with self.assertRaisesRegex(ValueError, "Cannot normalize the zero vector"):
+    def test_normalize(self, sample_vectors):
+        vector, _ = sample_vectors
+        normalized = vector.normalize()
+        assert math.isclose(normalized.magnitude(), 1)
+        with pytest.raises(ValueError, match="Cannot normalize the zero vector"):
             Vector3d(0, 0, 0).normalize()
 
-    def test_angle_with(self):
-        self.assertAlmostEqual(
-            Vector3d(1, 0, 0).angle_with(Vector3d(0, 1, 0)), math.pi / 2
-        )
-        with self.assertRaisesRegex(ValueError, "Cannot compute angle with the zero vector"):
-            self.vector.angle_with(Vector3d(0, 0, 0))
-        self.assertIs(self.vector.angle_with(object()), NotImplemented)
+    def test_finite_coordinates(self):
+        with pytest.raises(ValueError, match="Coordinates must be finite numbers"):
+            Vector3d(float("inf"), 0, 0)
+        with pytest.raises(ValueError, match="Coordinates must be finite numbers"):
+            Vector3d(0, float("nan"), 0)
 
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_angle_with(self, sample_vectors):
+        vector, _ = sample_vectors
+        assert math.isclose(Vector3d(1, 0, 0).angle_with(Vector3d(0, 1, 0)), math.pi / 2)
+        with pytest.raises(ValueError, match="Cannot compute angle with the zero vector"):
+            vector.angle_with(Vector3d(0, 0, 0))
+        assert vector.angle_with(object()) is NotImplemented

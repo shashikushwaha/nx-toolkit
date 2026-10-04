@@ -1,191 +1,182 @@
-import unittest
 import os
 import sys
+
+import pytest
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-from nxopenkit import Part
-# from nxopenkit.core import part
-
-class TestPart(unittest.TestCase): 
-
-    def open_test_part(self, fixture_name):
-        self.filePath = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'test-cases', fixture_name))
-        self.part1 = Part.open_part(self.filePath)
-
-    def tearDown(self):
-        Part.close_all()
-
-    def test_get_bodies(self):
-        self.open_test_part('body.prt')
-        allBodies = Part.bodies()
-        self.assertEqual(len(allBodies), 3)
-
-    def test_get_faces(self):
-        self.open_test_part('face.prt')
-        allfaces = Part.faces()
-        self.assertEqual(len(allfaces), 6)
-    
-    def test_get_edges(self):
-        self.open_test_part('face.prt')
-        all_edges = Part.edges()
-        self.assertEqual(len(all_edges), 24)
-
-    def test_get_displayable_objects(self):
-        self.open_test_part('face.prt')
-        all_displayables = Part.displayable_objects()
-        self.assertEqual(len(all_displayables), 40)
-        self.assertTrue(all(obj.to_nx is not None for obj in all_displayables))
-    
-    def test_get_part(self):
-        self.open_test_part('part.prt')
-        nxPart = self.part1.to_nx
-        self.assertIsNotNone(nxPart)       
-
-    def test_get_body_name(self):
-        self.open_test_part('named-object.prt')
-        body = Part.bodies("BODY_01")
-        self.assertIsNotNone(body)   
-        self.assertIsNotNone(body[0].to_nx)
-    
-    def test_failed_get_body_name(self):
-        self.open_test_part('named-object.prt')
-        with self.assertRaises(ValueError) as context:            
-            body = Part.bodies("BODY_011")            
-        self.assertEqual(str(context.exception), "BODY_011 not found.")  
-
-    def test_get_points(self):
-        self.open_test_part('points.prt')
-        all_points = Part.points()
-        self.assertEqual(len(all_points), 6)
-
-    def test_get_point_name(self):
-        self.open_test_part('points.prt')
-        point = Part.points("POINT_04")
-        self.assertIsNotNone(point)
-        self.assertIsNotNone(point[0].to_nx)
-
-    def test_get_curve(self):
-        self.open_test_part('part.prt')
-        all_curves = Part.curves()
-        self.assertEqual(len(all_curves), 4)
-
-    def test_get_curve_name(self):
-        self.open_test_part('part.prt')
-        curve = Part.curves("CURVE_01")
-        self.assertIsNotNone(curve)
-        self.assertIsNotNone(curve[0].to_nx)
-
-    def test_get_datum_plane(self):
-        self.open_test_part('part.prt')
-        datum_plane = Part.datum_planes()
-        self.assertEqual(len(datum_plane), 19)
-        self.assertIsNotNone(datum_plane[0].to_nx)
-
-    def test_get_csys(self):
-        self.open_test_part('part.prt')
-        datum_csys = Part.datum_csys()
-        self.assertEqual(len(datum_csys), 6)
-        self.assertIsNotNone(datum_csys[0].to_nx)
-
-    def test_get_csys_by_name(self):
-        self.open_test_part('part.prt')
-        datum_csys = Part.datum_csys("CSYS_01")
-        self.assertIsNotNone(datum_csys)
-        self.assertIsNotNone(datum_csys[0].to_nx)
-
-    def test_get_datum_axis(self):
-        self.open_test_part('part.prt')
-        datum_axis = Part.datum_axes()
-        self.assertEqual(len(datum_axis), 18)
-
-    def test_datum_plane_name(self):
-        self.open_test_part('part.prt')
-        datum_plane = Part.datum_planes("DATUM_02")
-        self.assertIsNotNone(datum_plane)
-        self.assertIsNotNone(datum_plane[0].to_nx)
-
-    def test_datum_axis_name(self):
-        self.open_test_part('part.prt')
-        datum_axis = Part.datum_axes("AXIS_01")
-        self.assertIsNotNone(datum_axis)
-        self.assertIsNotNone(datum_axis[0].to_nx)
-
-    def test_failed_get_datum_plane_name(self):
-        self.open_test_part('part.prt')
-        with self.assertRaises(ValueError) as context:            
-            datum_plane = Part.datum_planes("DATUM_PLANE_011")            
-        self.assertEqual(str(context.exception), "DATUM_PLANE_011 not found.")
-
-    def test_failed_get_datum_axis_name(self):
-        self.open_test_part('part.prt')
-        with self.assertRaises(ValueError) as context:            
-            datum_axis = Part.datum_axes("DATUM_AXIS_011")            
-        self.assertEqual(str(context.exception), "DATUM_AXIS_011 not found.")
-
-    def test_failed_get_curve_name(self):
-        self.open_test_part('part.prt')
-        with self.assertRaises(ValueError) as context:            
-            curve = Part.curves("CURVE_011")            
-        self.assertEqual(str(context.exception), "CURVE_011 not found.")
-
-    def test_failed_get_point_name(self):
-        self.open_test_part('points.prt')
-        with self.assertRaises(ValueError) as context:            
-            point = Part.points("POINT_011")            
-        self.assertEqual(str(context.exception), "POINT_011 not found.")
-
-    def test_failed_get_edge_name(self):
-        self.open_test_part('face.prt')
-        with self.assertRaises(ValueError) as context:            
-            edge = Part.edges("EDGE_011")            
-        self.assertEqual(str(context.exception), "EDGE_011 not found.")
-
-    def test_failed_get_face_name(self):
-        self.open_test_part('face.prt')
-        with self.assertRaises(ValueError) as context:            
-            face = Part.faces("FACE_011")            
-        self.assertEqual(str(context.exception), "FACE_011 not found.") 
-
-    def test_failed_get_body_name(self):
-        self.open_test_part('named-object.prt')
-        with self.assertRaises(ValueError) as context:            
-            body = Part.bodies("BODY_011")            
-        self.assertEqual(str(context.exception), "BODY_011 not found.")
-
-    def test_failed_get_displayable_object_name(self):
-        self.open_test_part('part.prt')
-        with self.assertRaises(ValueError) as context:            
-            displayable = Part.displayable_objects("DISPLAYABLE_011")            
-        self.assertEqual(str(context.exception), "DISPLAYABLE_011 not found.")
-
-    def test_get_displayable_object_name(self):
-        self.open_test_part('face.prt')
-        displayable = Part.displayable_objects("FACE_01")
-        self.assertIsNotNone(displayable[0])
-        self.assertIsNotNone(displayable[0].to_nx)
-
-    def test_get_displayable_object_name_body(self):
-        self.open_test_part('named-object.prt')
-        displayable = Part.displayable_objects("BODY_01")
-        self.assertIsNotNone(displayable[0])
-        self.assertIsNotNone(displayable[0].to_nx)
-
-    def test_get_displayable_object_name_point(self):
-        self.open_test_part('points.prt')
-        displayable = Part.displayable_objects("POINT_01")
-        self.assertIsNotNone(displayable[0])
-        self.assertIsNotNone(displayable[0].to_nx)
-
-    def test_get_feature(self):
-        self.open_test_part('part.prt')
-        all_features = Part.features()
-        self.assertEqual(len(all_features), 17)
-
-    def test_get_feature_name(self):
-        self.open_test_part('part.prt')
-        feature = Part.features("CUBE")
-        self.assertIsNotNone(feature[0])
-        self.assertIsNotNone(feature[0].to_nx)
+try:
+    import NXOpen  # noqa: F401
+except Exception as exc:  # pragma: no cover
+    pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
+from nxopenkit.core.part import Part
 
 
-if __name__ == '__main__':
-    unittest.main()        
+@pytest.fixture
+def part_factory():
+    def _open(fixture_name):
+        file_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "test-cases", fixture_name)
+        )
+        return Part.open_part(file_path)
+
+    yield _open
+    Part.close_all()
+
+
+class TestPart:
+    def test_get_bodies(self, part_factory):
+        part_factory("body.prt")
+        all_bodies = Part.get_bodies()
+        assert len(all_bodies) == 3
+
+    def test_get_faces(self, part_factory):
+        part_factory("face.prt")
+        all_faces = Part.get_faces()
+        assert len(all_faces) == 6
+
+    def test_get_edges(self, part_factory):
+        part_factory("face.prt")
+        all_edges = Part.get_edges()
+        assert len(all_edges) == 24
+
+    def test_get_displayable_objects(self, part_factory):
+        part_factory("face.prt")
+        all_displayables = Part.get_displayable_objects()
+        assert len(all_displayables) == 40
+        assert all(obj.to_nx is not None for obj in all_displayables)
+
+    def test_get_part(self, part_factory):
+        part = part_factory("part.prt")
+        assert part.to_nx is not None
+
+    def test_get_body_name(self, part_factory):
+        part_factory("named-object.prt")
+        body = Part.get_bodies("BODY_01")
+        assert body is not None
+        assert body[0].to_nx is not None
+
+    def test_failed_get_body_name(self, part_factory):
+        part_factory("named-object.prt")
+        with pytest.raises(ValueError, match=r"BODY_011 not found\."):
+            Part.get_bodies("BODY_011")
+
+    def test_get_points(self, part_factory):
+        part_factory("points.prt")
+        all_points = Part.get_points()
+        assert len(all_points) == 6
+
+    def test_get_point_name(self, part_factory):
+        part_factory("points.prt")
+        point = Part.get_points("POINT_04")
+        assert point is not None
+        assert point[0].to_nx is not None
+
+    def test_get_curve(self, part_factory):
+        part_factory("part.prt")
+        all_curves = Part.get_curves()
+        assert len(all_curves) == 4
+
+    def test_get_curve_name(self, part_factory):
+        part_factory("part.prt")
+        curve = Part.get_curves("CURVE_01")
+        assert curve is not None
+        assert curve[0].to_nx is not None
+
+    def test_get_datum_plane(self, part_factory):
+        part_factory("part.prt")
+        datum_plane = Part.get_datum_planes()
+        assert len(datum_plane) == 19
+        assert datum_plane[0].to_nx is not None
+
+    def test_get_csys(self, part_factory):
+        part_factory("part.prt")
+        datum_csys = Part.get_datum_csys()
+        assert len(datum_csys) == 6
+        assert datum_csys[0].to_nx is not None
+
+    def test_get_csys_by_name(self, part_factory):
+        part_factory("part.prt")
+        datum_csys = Part.get_datum_csys("CSYS_01")
+        assert datum_csys is not None
+        assert datum_csys[0].to_nx is not None
+
+    def test_get_datum_axis(self, part_factory):
+        part_factory("part.prt")
+        datum_axis = Part.get_datum_axes()
+        assert len(datum_axis) == 18
+
+    def test_datum_plane_name(self, part_factory):
+        part_factory("part.prt")
+        datum_plane = Part.get_datum_planes("DATUM_02")
+        assert datum_plane is not None
+        assert datum_plane[0].to_nx is not None
+
+    def test_datum_axis_name(self, part_factory):
+        part_factory("part.prt")
+        datum_axis = Part.get_datum_axes("AXIS_01")
+        assert datum_axis is not None
+        assert datum_axis[0].to_nx is not None
+
+    def test_failed_get_datum_plane_name(self, part_factory):
+        part_factory("part.prt")
+        with pytest.raises(ValueError, match=r"DATUM_PLANE_011 not found\."):
+            Part.get_datum_planes("DATUM_PLANE_011")
+
+    def test_failed_get_datum_axis_name(self, part_factory):
+        part_factory("part.prt")
+        with pytest.raises(ValueError, match=r"DATUM_AXIS_011 not found\."):
+            Part.get_datum_axes("DATUM_AXIS_011")
+
+    def test_failed_get_curve_name(self, part_factory):
+        part_factory("part.prt")
+        with pytest.raises(ValueError, match=r"CURVE_011 not found\."):
+            Part.get_curves("CURVE_011")
+
+    def test_failed_get_point_name(self, part_factory):
+        part_factory("points.prt")
+        with pytest.raises(ValueError, match=r"POINT_011 not found\."):
+            Part.get_points("POINT_011")
+
+    def test_failed_get_edge_name(self, part_factory):
+        part_factory("face.prt")
+        with pytest.raises(ValueError, match=r"EDGE_011 not found\."):
+            Part.get_edges("EDGE_011")
+
+    def test_failed_get_face_name(self, part_factory):
+        part_factory("face.prt")
+        with pytest.raises(ValueError, match=r"FACE_011 not found\."):
+            Part.get_faces("FACE_011")
+
+    def test_failed_get_displayable_object_name(self, part_factory):
+        part_factory("part.prt")
+        with pytest.raises(ValueError, match=r"DISPLAYABLE_011 not found\."):
+            Part.get_displayable_objects("DISPLAYABLE_011")
+
+    def test_get_displayable_object_name(self, part_factory):
+        part_factory("face.prt")
+        displayable = Part.get_displayable_objects("FACE_01")
+        assert displayable[0] is not None
+        assert displayable[0].to_nx is not None
+
+    def test_get_displayable_object_name_body(self, part_factory):
+        part_factory("named-object.prt")
+        displayable = Part.get_displayable_objects("BODY_01")
+        assert displayable[0] is not None
+        assert displayable[0].to_nx is not None
+
+    def test_get_displayable_object_name_point(self, part_factory):
+        part_factory("points.prt")
+        displayable = Part.get_displayable_objects("POINT_01")
+        assert displayable[0] is not None
+        assert displayable[0].to_nx is not None
+
+    def test_get_feature(self, part_factory):
+        part_factory("part.prt")
+        all_features = Part.get_features()
+        assert len(all_features) == 17
+
+    def test_get_feature_name(self, part_factory):
+        part_factory("part.prt")
+        feature = Part.get_features("CUBE")
+        assert feature[0] is not None
+        assert feature[0].to_nx is not None

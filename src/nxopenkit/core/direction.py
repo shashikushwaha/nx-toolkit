@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import cast
 
 import NXOpen
-from nxopenkit.core import direction
+# from nxopenkit.core import direction
 from nxopenkit.core.part import Part
 from .displayable_object import DisplayableObject
 

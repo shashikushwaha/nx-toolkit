@@ -7,6 +7,10 @@ import NXOpen
 
 class Vector3d:
     def __init__(self, x: float, y: float, z: float):
+        if not all(isinstance(coord, (int, float)) for coord in (x, y, z)):
+            raise TypeError("Coordinates must be numeric values.")
+        if not all(math.isfinite(coord) for coord in (x, y, z)):
+            raise ValueError("Coordinates must be finite numbers.")
         self.x = x
         self.y = y
         self.z = z
@@ -69,3 +73,21 @@ class Vector3d:
         if magnitude_product == 0:
             raise ValueError("Cannot compute angle with the zero vector.")
         return math.acos(dot_product / magnitude_product)
+
+    def parallel_to(self, other: "Vector3d") -> bool:
+        if not isinstance(other, Vector3d):
+            return NotImplemented
+        cross_product = self.cross(other)
+        return cross_product.magnitude() == 0
+
+    def collinear_with(self, other: "Vector3d") -> bool:
+        if not isinstance(other, Vector3d):
+            return NotImplemented
+        return self.parallel_to(other) and self.dot(other) > 0
+
+    def perpendicular_to(self, other: "Vector3d") -> bool:
+        if not isinstance(other, Vector3d):
+            return NotImplemented
+        return self.dot(other) == 0
+
+    

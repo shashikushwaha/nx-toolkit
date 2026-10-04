@@ -1,8 +1,6 @@
 import sys
 import math
 import os
-
-# from numpy import var
 import NXOpen
 import NXOpen.UF
 
@@ -69,7 +67,7 @@ class Part(NamedObject) :
 
 
     @staticmethod
-    def bodies(name: Optional[str] = None) -> List[Body]:
+    def get_bodies(name: Optional[str] = None) -> List[Body]:
         bodiesCol = Part.work_part().to_nx.Bodies
         all_bodies = []
         for one_body in bodiesCol:
@@ -82,8 +80,8 @@ class Part(NamedObject) :
         return matching_bodies
 
     @staticmethod
-    def faces(name: Optional[str] = None) -> List[Face]:
-        all_bodies = Part.bodies()
+    def get_faces(name: Optional[str] = None) -> List[Face]:
+        all_bodies = Part.get_bodies()
         all_faces = [Face(face) for body in all_bodies for face in body.to_nx.GetFaces()]
         if name is None:
             return all_faces
@@ -93,7 +91,7 @@ class Part(NamedObject) :
         return matching_faces
     
     @staticmethod
-    def edges(name: Optional[str] = None) -> List[Edge]:
+    def get_edges(name: Optional[str] = None) -> List[Edge]:
         all_edges = [
             Edge(edge)
             for body in Part.work_part().to_nx.Bodies
@@ -109,7 +107,7 @@ class Part(NamedObject) :
         return matching_edges
     
     @staticmethod
-    def points(name: Optional[str] = None) -> List[Point]:
+    def get_points(name: Optional[str] = None) -> List[Point]:
         work_part = Part.work_part()
         point_collection : NXOpen.PointCollection = work_part.to_nx.Points
         all_points = []
@@ -124,16 +122,16 @@ class Part(NamedObject) :
 
 
     @staticmethod
-    def displayable_objects(name: Optional[str] = None) -> List[DisplayableObject]:
+    def get_displayable_objects(name: Optional[str] = None) -> List[DisplayableObject]:
         all_displayables: List[DisplayableObject] = []
-        all_displayables.extend(Part.bodies())
-        all_displayables.extend(Part.faces())
-        all_displayables.extend(Part.edges())
-        all_displayables.extend(Part.points())
-        all_displayables.extend(Part.curves())
-        all_displayables.extend(Part.datum_planes())
-        all_displayables.extend(Part.datum_csys())  
-        all_displayables.extend(Part.datum_axes())
+        all_displayables.extend(Part.get_bodies())
+        all_displayables.extend(Part.get_faces())
+        all_displayables.extend(Part.get_edges())
+        all_displayables.extend(Part.get_points())
+        all_displayables.extend(Part.get_curves())
+        all_displayables.extend(Part.get_datum_planes())
+        all_displayables.extend(Part.get_datum_csys())  
+        all_displayables.extend(Part.get_datum_axes())
         if name is None:
             return all_displayables
         matching_displayables = [obj for obj in all_displayables if obj.name == name]
@@ -144,7 +142,7 @@ class Part(NamedObject) :
 
     
     @staticmethod
-    def features(name: Optional[str] = None) -> List[NXOpen.Features.Feature]:
+    def get_features(name: Optional[str] = None) -> List[NXOpen.Features.Feature]:
         feature_collection : NXOpen.Features.FeatureCollection = Part.work_part().to_nx.Features
         all_features = []
         for one_feature in feature_collection:
@@ -157,7 +155,7 @@ class Part(NamedObject) :
         return matching_features
 
     @staticmethod
-    def curves(name: Optional[str] = None) -> List[Curve]:
+    def get_curves(name: Optional[str] = None) -> List[Curve]:
         all_collection : NXOpen.CurveCollection = Part.work_part().to_nx.Curves
         all_curves = []
         for one_curve in all_collection:
@@ -170,7 +168,7 @@ class Part(NamedObject) :
         return matching_curves
 
     @staticmethod
-    def datum_planes(name: Optional[str] = None) -> List[DatumPlane]:
+    def get_datum_planes(name: Optional[str] = None) -> List[DatumPlane]:
         datum_coll : NXOpen.DatumCollection = Part.work_part().to_nx.Datums
         allDatumPlanes = []
         for one_datum_plane in datum_coll:
@@ -184,7 +182,7 @@ class Part(NamedObject) :
         return matching_planes
 
     @staticmethod
-    def datum_csys(name: Optional[str] = None) -> List[CoordinateSystem]:
+    def get_datum_csys(name: Optional[str] = None) -> List[CoordinateSystem]:
         datum_csys : NXOpen.CoordinateSystem = Part.work_part().to_nx.CoordinateSystems
         allDatumCsys = []
         for one_datum_csys in datum_csys:
@@ -197,7 +195,7 @@ class Part(NamedObject) :
         return matching_csys
 
     @staticmethod
-    def datum_axes(name: Optional[str] = None) -> List[DatumAxis]:
+    def get_datum_axes(name: Optional[str] = None) -> List[DatumAxis]:
         datum_coll : NXOpen.DatumCollection = Part.work_part().to_nx.Datums
         all_datum_axes = []
         for one_datum_axis in datum_coll:
