@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 import NXOpen
 import NXOpen.Features
-import NXOpen.GeometricUtilities
+# import NXOpen.GeometricUtilities
 
 from .feature_builder import FeatureBuilder
 from nxopenkit.core.part import Part
@@ -15,9 +15,9 @@ if TYPE_CHECKING:
     from nxopenkit.core.body import Body
 
 
-KeepRemoveOption = (
-    NXOpen.GeometricUtilities.BooleanRegionSelect.KeepRemoveOption
-)
+# KeepRemoveOption = (
+#     NXOpen.GeometricUtilities.BooleanRegionSelect.KeepRemoveOption
+# )
 
 
 class BooleanBuilder(FeatureBuilder):

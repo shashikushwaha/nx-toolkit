@@ -1,17 +1,14 @@
 import math
-import os
-import sys
 from unittest.mock import patch
 
 import pytest
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 from nxopenkit.maths.vector3d import Vector3d
-
-try:
-    import NXOpen  # noqa: F401
-except Exception as exc:  # pragma: no cover
-    pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
+import NXOpen
+# try:
+#     import NXOpen  # noqa: F401
+# except Exception as exc:  # pragma: no cover
+#     pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
 
 
 

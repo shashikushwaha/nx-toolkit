@@ -4,7 +4,7 @@ import math
 from collections.abc import Sequence
 from turtle import distance
 from turtle import distance
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 from unittest import case
 
 import NXOpen
@@ -123,11 +123,11 @@ class ExtrudeBuilder(FeatureBuilder):
     def draft(
         self,
         draft_type: NXOpen.GeometricUtilities.SimpleDraft.SimpleDraftType,
-        draft_angle: float | str,        
-        draft_vector: Vector3d | None = None
+        draft_angle: float | str,
+        draft_option : NXOpen.GeometricUtilities.MultiDraft.AngleOption | None = None
     ) -> ExtrudeBuilder:
         self._extrudeBld.Draft.DraftOption = draft_type
-        self._extrudeBld.Draft.DraftAngle.Value = draft_angle
-        if draft_vector is not None:
-            self._extrudeBld.Draft.Vector = draft_vector.to_nx
+        self._extrudeBld.Draft.DraftAngle.SetFormula(str(draft_angle))
+        if draft_option is not None:
+            self._extrudeBld.Draft.SetAngleOption(draft_option)
         return self

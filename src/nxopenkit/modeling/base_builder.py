@@ -1,7 +1,7 @@
 import sys
 import NXOpen
 import os
-from nxopenkit.core import Part
+from nxopenkit.core.part import Part
 
 
 

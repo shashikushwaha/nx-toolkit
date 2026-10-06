@@ -1,26 +1,16 @@
-import os
-import sys
-
 import pytest
+import NXOpen
+import NXOpen.GeometricUtilities
 
-
-try:
-    import NXOpen
-except Exception as exc:  # pragma: no cover
-    pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 from nxopenkit.modeling.extrude_builder import ExtrudeBuilder
 from nxopenkit.core.part import Part
 from nxopenkit.maths.vector3d import Vector3d
 
 
 @pytest.fixture
-def extrude_builder_factory():
+def extrude_builder_factory(project_root):
     def _make_builder():
-        file_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "..", "test-cases", "body.prt")
-        )
+        file_path = str(project_root / "test-cases" / "body.prt")
         Part.open_part(file_path)
         edges = Part.get_faces("FACE_016")[0].get_edges()
         return ExtrudeBuilder(edges, "0", 10, direction=Vector3d(0, 0, 1))
@@ -42,10 +32,10 @@ class TestExtrudeBuilder:
         feature = builder.commit_feature()
         assert feature is not None
 
-    def test_extrude_and_commit_feature(self, extrude_builder_factory):
+    def test_extrude_and_commit_feature(self, extrude_builder_factory, project_root):
         builder = extrude_builder_factory()
         feature = builder.commit_feature()
-        file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "test-cases", "temp", "test.prt"))
+        file_path = str(project_root / "test-cases" / "temp" / "test.prt")
         Part.save_as(file_path)
         assert feature is not None
 
@@ -56,12 +46,19 @@ class TestExtrudeBuilder:
 
     def test_draft_and_commit_feature(self, extrude_builder_factory):
         builder = extrude_builder_factory()
-        builder.draft(NXOpen.GeometricUtilities.SimpleDraft.SimpleDraftType., 2, Vector3d(0,0,1))
+        builder.draft(NXOpen.GeometricUtilities.SimpleDraft.SimpleDraftType.SimpleFromProfile, "3.0")        
         feature = builder.commit_feature()
+        Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt", True)
+        assert feature is not None
+
+    def test_draft_with_angle_option(self, extrude_builder_factory):
+        builder = extrude_builder_factory()
+        builder.draft(NXOpen.GeometricUtilities.SimpleDraft.SimpleDraftType.SimpleFromProfile, "3", NXOpen.GeometricUtilities.MultiDraft.AngleOption.Multiple)
+        feature = builder.commit_feature()
+        Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt", True)
         assert feature is not None
 
     def test_boolean_and_commit_feature(self, extrude_builder_factory):
         builder = extrude_builder_factory()
         feature = builder.commit_feature()
         assert feature is not None
-

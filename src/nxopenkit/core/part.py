@@ -2,7 +2,7 @@ import sys
 import math
 import os
 import NXOpen
-import NXOpen.UF
+
 
 from typing import List, Optional
 from .named_object import NamedObject
@@ -33,7 +33,8 @@ class Part(NamedObject) :
         return NXOpen.Session.GetSession()
 
     @staticmethod
-    def uf_session() -> NXOpen.UF.UFSession:
+    def uf_session() -> "NXOpen.UF.UFSession":
+        # import NXOpen.UF
         return NXOpen.UF.UFSession.GetUFSession()
 
     @staticmethod

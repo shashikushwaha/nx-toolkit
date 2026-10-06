@@ -2,11 +2,40 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-              "name": "NxOpen-Debugging",
-            "program": "${workspaceFolder}/tests/test_part.py",
-            "cwd": "${workspaceFolder}"
+            "name": "NxOpen-Debugging",
+            "module": "pytest",
+            "args": [
+                "${file}",
+                "-q"
+            ],
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}\\.env",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "type": "debugpy",
+            "request": "launch",
+            "name": "NxOpen-Debug-Test",
+            "module": "pytest",
+            "args": [
+                "-q",
+                "${input:pytestNodeId}"
+            ],
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}\\.env",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ],
+    "inputs": [
+        {
+            "id": "pytestNodeId",
+            "type": "promptString",
+            "description": "Pytest node ID to debug",
+            "default": "tests/test_boolean_builder.py::TestBooleanBuilder::test_settings_without_tolerance"
         }
     ]
 }

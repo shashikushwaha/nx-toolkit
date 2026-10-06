@@ -1,21 +1,16 @@
-import os
-import sys
-
 import pytest
+# import NXOpen 
+# try:
+#     import NXOpen  # noqa: F401
+# except Exception as exc:  # pragma: no cover
+#     pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-try:
-    import NXOpen  # noqa: F401
-except Exception as exc:  # pragma: no cover
-    pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
 from nxopenkit.core.part import Part
 
 
 @pytest.fixture
-def named_part():
-    file_path = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "test-cases", "named-object.prt")
-    )
+def named_part(project_root):
+    file_path = str(project_root / "test-cases" / "named-object.prt")
     part = Part.open_part(file_path)
     try:
         yield part

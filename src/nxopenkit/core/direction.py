@@ -4,7 +4,7 @@ from typing import cast
 
 import NXOpen
 # from nxopenkit.core import direction
-from nxopenkit.core.part import Part
+from .part import Part
 from .displayable_object import DisplayableObject
 
 class Direction(DisplayableObject):

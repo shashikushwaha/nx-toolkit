@@ -1,22 +1,20 @@
-import os
-import sys
+import importlib
 
 import pytest
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-try:
-    import NXOpen  # noqa: F401
-except Exception as exc:  # pragma: no cover
-    pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
+# try:
+#     importlib.import_module("NXOpen.UF")
+# except Exception as exc:  # pragma: no cover
+#     pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
+# import NXOpen
+
 from nxopenkit.core.part import Part
 
 
 @pytest.fixture
-def part_factory():
+def part_factory(project_root):
     def _open(fixture_name):
-        file_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "..", "test-cases", fixture_name)
-        )
+        file_path = str(project_root / "test-cases" / fixture_name)
         return Part.open_part(file_path)
 
     yield _open

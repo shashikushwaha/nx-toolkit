@@ -1,14 +1,12 @@
-import os
-import sys
 from unittest.mock import Mock, patch
 
 import pytest
+# import NXOpen
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-try:
-    import NXOpen  # noqa: F401
-except Exception as exc:  # pragma: no cover
-    pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
+# try:
+#     import NXOpen  # noqa: F401
+# except Exception as exc:  # pragma: no cover
+#     pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
 
 from nxopenkit.core.direction import Direction
 

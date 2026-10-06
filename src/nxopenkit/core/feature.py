@@ -3,13 +3,13 @@ from .named_object import NamedObject
 from .body import Body
 from typing import List, cast
 import NXOpen
-import NXOpen_Features
+import NXOpen.Features
 
 
 class Feature(NamedObject):
-    def __init__(self, nxFeature: NXOpen_Features.Feature):
+    def __init__(self, nxFeature: NXOpen.Features.Feature):
         super().__init__(nxFeature)
 
     @property
-    def to_nx(self) -> NXOpen_Features.Feature:
-        return cast(NXOpen_Features.Feature, super().to_nx)
+    def to_nx(self) -> NXOpen.Features.Feature:
+        return cast(NXOpen.Features.Feature, super().to_nx)

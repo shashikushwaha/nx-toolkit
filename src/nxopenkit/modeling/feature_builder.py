@@ -1,5 +1,5 @@
 import NXOpen
-import NXOpen.Features
+# import NXOpen.Features
 from .builder import Builder
 from nxopenkit import Feature
 

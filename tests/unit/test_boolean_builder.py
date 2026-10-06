@@ -1,25 +1,18 @@
-import os
-import sys
-
 import pytest
+import NXOpen
+# try:
+#     import NXOpen
+# except Exception as exc:  # pragma: no cover
+#     pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
 
-try:
-    import NXOpen
-    import NXOpen.Features
-except Exception as exc:  # pragma: no cover
-    pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
-from nxopenkit.core.part import  Part
+from nxopenkit.core.part import Part
 from nxopenkit.modeling.boolean_builder import BooleanBuilder
 
 
 @pytest.fixture
-def builder_factory():
+def builder_factory(project_root):
     def _make_builder(boolean_type=NXOpen.Features.Feature.BooleanType.Unite):
-        file_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "..", "test-cases", "body.prt")
-        )
+        file_path = str(project_root / "test-cases" / "body.prt")
         Part.open_part(file_path)
         target_body = Part.get_bodies("BODY_01")
         tool_bodies = Part.get_bodies()

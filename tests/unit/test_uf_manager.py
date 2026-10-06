@@ -1,25 +1,24 @@
 import os
-import sys
 
 import pytest
 
-workspace_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, os.path.join(workspace_root, "src"))
-pytestmark = pytest.mark.skipif(
-    not os.environ.get("UGII_BASE_DIR"),
-    reason="UFManager integration tests require UGII_BASE_DIR",
-)
+workspace_root = str(__import__("pathlib").Path(__file__).resolve().parents[2])
+# pytestmark = pytest.mark.skipif(
+#     not os.environ.get("UGII_BASE_DIR"),
+#     reason="UFManager integration tests require UGII_BASE_DIR",
+# )
 
-nx_root = os.environ.get("UGII_BASE_DIR")
-if nx_root:
-    sys.path.insert(0, os.path.join(nx_root, "NXBIN", "python"))
-    if hasattr(os, "add_dll_directory"):
-        os.add_dll_directory(os.path.join(nx_root, "NXBIN"))
+# nx_root = os.environ.get("UGII_BASE_DIR")
+# if nx_root:
+#     sys.path.insert(0, os.path.join(nx_root, "NXBIN", "python"))
+#     if hasattr(os, "add_dll_directory"):
+#         os.add_dll_directory(os.path.join(nx_root, "NXBIN"))
 
-try:
-    import NXOpen
-except Exception as exc:  # pragma: no cover
-    pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
+# try:
+#     import NXOpen
+# except Exception as exc:  # pragma: no cover
+#     pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
+import NXOpen
 from nxopenkit.core.part import Part
 from nxopenkit.core.uf_manager import UFManager
 
@@ -36,13 +35,13 @@ def uf_manager_context():
 
 
 def body_tag(work_part):
-    bodies = list(work_part.bodies())
+    bodies = list(work_part.get_bodies())
     assert bodies, "part.prt must contain a body"
     return bodies[0].tag
 
 
 def face_tag(work_part):
-    for body in work_part.bodies():
+    for body in work_part.get_bodies():
         faces = body.to_nx.GetFaces()
         if faces:
             return faces[0].Tag
@@ -50,7 +49,7 @@ def face_tag(work_part):
 
 
 def edge_tag(work_part):
-    for body in work_part.bodies():
+    for body in work_part.get_bodies():
         for face in body.to_nx.GetFaces():
             edges = face.GetEdges()
             if edges:
@@ -59,7 +58,7 @@ def edge_tag(work_part):
 
 
 def curve_tag(work_part):
-    curves = list(work_part.Curves)
+    curves = list(work_part.to_nx.Curves)
     assert curves, "part.prt must contain a curve"
     return curves[0].Tag
 

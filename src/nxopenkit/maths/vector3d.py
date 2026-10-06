@@ -1,8 +1,11 @@
 import math
 import sys
-from typing import cast
-import NXOpen
+from typing import cast, Union
 
+try:
+    import NXOpen
+except Exception:  # pragma: no cover - optional NX runtime dependency
+    NXOpen = None
 
 
 class Vector3d:

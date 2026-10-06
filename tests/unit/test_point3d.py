@@ -1,8 +1,6 @@
-import sys
-import os
 from unittest.mock import patch
+
 import pytest
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
 
 from nxopenkit.maths.point3d import Point3d
 from nxopenkit.maths.vector3d import Vector3d
