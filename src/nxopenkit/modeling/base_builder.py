@@ -19,6 +19,7 @@ class BaseBuilder():
     def destroy(self):
         if(self.builder is not None):
             self.builder.Destroy()
+            self.builder = None
 
     def undo_mark(self):
         self.session.UndoToMark(self.undo_mark_id, self.undo_mark_name)

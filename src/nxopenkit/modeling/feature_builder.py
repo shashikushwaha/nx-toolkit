@@ -20,6 +20,7 @@ class FeatureBuilder(Builder) :
         except NXOpen.NXException as error:
             self.undo_mark()
             should_destroy = False
+            self.feature_builder = None
             raise ValueError(error.Message) from error
         finally:
             if should_destroy:
