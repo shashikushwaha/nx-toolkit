@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import math
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
@@ -10,9 +11,10 @@ import NXOpen.Features
 
 from .feature_builder import FeatureBuilder
 from nxopenkit.core.part import Part
-
-if TYPE_CHECKING:
-    from nxopenkit.core.body import Body
+from nxopenkit.core.body import Body
+logger = logging.getLogger(__name__)
+# if TYPE_CHECKING:
+#     from nxopenkit.core.body import Body
 
 
 # KeepRemoveOption = (
@@ -25,9 +27,7 @@ class BooleanBuilder(FeatureBuilder):
         self,
         target_body: Body,
         tool_bodies: Sequence[Body],
-        boolean_type: NXOpen.Features.Feature.BooleanType = (
-            NXOpen.Features.Feature.BooleanType.Unite
-        ),
+        boolean_type: NXOpen.Features.Feature.BooleanType = NXOpen.Features.Feature.BooleanType.Unite
     ):
         if not tool_bodies:
             raise ValueError("At least one tool body is required.")
@@ -43,24 +43,26 @@ class BooleanBuilder(FeatureBuilder):
         work_part = Part.work_part().to_nx
         target_nx = target_body.to_nx
         tool_nx_bodies = [body.to_nx for body in self.tool_bodies]
-
-        self._booleanBld = (
-            work_part.Features.CreateBooleanBuilderUsingCollector(
-                NXOpen.Features.BooleanFeature.Null
+        try:
+            self._booleanBld = work_part.Features.CreateBooleanBuilderUsingCollector( NXOpen.Features.BooleanFeature.Null)
+            
+            self.feature_builder = self._booleanBld
+            self.builder = self._booleanBld
+            self._booleanBld.Tolerance = self.distance_tolerance
+            self._booleanBld.Operation = boolean_type
+            self._booleanBld.Targets.Add(target_nx)
+            self._booleanBld.BooleanRegionSelect.AssignTargets([target_nx])
+            collector = work_part.ScCollectors.CreateCollector()
+            body_rule = work_part.ScRuleFactory.CreateRuleBodyDumb(
+                tool_nx_bodies, True
             )
-        )
-        self.feature_builder = self._booleanBld
-        self.builder = self._booleanBld
-        self._booleanBld.Tolerance = self.distance_tolerance
-        self._booleanBld.Operation = boolean_type
-        self._booleanBld.Targets.Add(target_nx)
-        self._booleanBld.BooleanRegionSelect.AssignTargets([target_nx])
-        collector = work_part.ScCollectors.CreateCollector()
-        body_rule = work_part.ScRuleFactory.CreateRuleBodyDumb(
-            tool_nx_bodies, True
-        )
-        collector.ReplaceRules([body_rule], False)
-        self._booleanBld.ToolBodyCollector = collector
+            collector.ReplaceRules([body_rule], False)
+            self._booleanBld.ToolBodyCollector = collector
+        except Exception:
+            logger.exception("Failed creating BooleanBuilder")
+            if self._extrudeBld is not None:
+                self.destroy()
+            raise
 
     @property
     def nx_builder(self) -> NXOpen.Features.BooleanBuilder:
@@ -83,12 +85,18 @@ class BooleanBuilder(FeatureBuilder):
         keep_tool: bool = False,
         convert_to_sew: bool = False,
     ) -> BooleanBuilder:
-        if tolerance is not None:
-            if not math.isfinite(tolerance) or tolerance <= 0:
-                raise ValueError("tolerance must be a finite positive number.")
-            self._booleanBld.Tolerance = tolerance
+        try:
+            if tolerance is not None:
+                if not math.isfinite(tolerance) or tolerance <= 0:
+                    raise ValueError("tolerance must be a finite positive number.")
+                self._booleanBld.Tolerance = tolerance
 
-        self._booleanBld.CopyTargets = keep_target
-        self._booleanBld.CopyTools = keep_tool
-        self._booleanBld.ConvertToSew = convert_to_sew
+            self._booleanBld.CopyTargets = keep_target
+            self._booleanBld.CopyTools = keep_tool
+            self._booleanBld.ConvertToSew = convert_to_sew
+        except Exception:
+            logger.exception("Failed applying extrude settings")
+            if self._extrudeBld is not None:
+                self.destroy()
+            raise
         return self

@@ -1,8 +1,11 @@
+from __future__ import annotations
 from .part import Part
 import NXOpen
-import NXOpen.UF
 from enum import IntEnum
-from typing import Optional, Tuple
+from typing import TYPE_CHECKING, Tuple
+import NXOpen.UF
+
+	
 
 
 # class UFObjectType(IntEnum):
@@ -17,7 +20,7 @@ from typing import Optional, Tuple
 # 	EDGE = NXOpen.UF.UFConstants.UF_edge_type
 # 	DATUM_AXIS = NXOpen.UF.UFConstants.UF_datum_axis_type
 # 	DATUM_PLANE = NXOpen.UF.UFConstants.UF_datum_plane_type
-# 	FEATURE = NXOpen.UF.UFConstants.UF_feature_type
+	# FEATURE = NXOpen.UF.UFConstants.UF_feature_type
 
 # 	@classmethod
 # 	def _missing_(cls, value: object) -> Optional["UFObjectType"]:

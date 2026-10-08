@@ -1,12 +1,5 @@
 import math
-import sys
-from typing import cast, Union
-
-try:
-    import NXOpen
-except Exception:  # pragma: no cover - optional NX runtime dependency
-    NXOpen = None
-
+import NXOpen
 
 class Vector3d:
     def __init__(self, x: float, y: float, z: float):

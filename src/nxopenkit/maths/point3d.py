@@ -1,8 +1,4 @@
-try:
-    import NXOpen
-except Exception:  # pragma: no cover - optional NX runtime dependency
-    NXOpen = None
-
+import NXOpen
 from .vector3d import Vector3d
 
 
