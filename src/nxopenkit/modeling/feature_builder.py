@@ -18,12 +18,12 @@ class FeatureBuilder(Builder) :
                 raise ValueError("CommitFeature returned no feature")
             return Feature(feature)
         except NXOpen.NXException as error:
-            self.undo_mark()
+            self._undo_mark()
             should_destroy = False
             self.feature_builder = None
-            raise ValueError(error.Message) from error
+            raise ValueError(error.GetMessage()) from error
         finally:
             if should_destroy:
-                self.destroy()
+                self._destroy()
 
 

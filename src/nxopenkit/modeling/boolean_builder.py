@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import math
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
@@ -12,6 +11,7 @@ import NXOpen.Features
 from .feature_builder import FeatureBuilder
 from nxopenkit.core.part import Part
 from nxopenkit.core.body import Body
+from .decorators import builder_operation
 logger = logging.getLogger(__name__)
 # if TYPE_CHECKING:
 #     from nxopenkit.core.body import Body
@@ -43,6 +43,7 @@ class BooleanBuilder(FeatureBuilder):
         work_part = Part.work_part().to_nx
         target_nx = target_body.to_nx
         tool_nx_bodies = [body.to_nx for body in self.tool_bodies]
+        self._set_undo_mark()
         try:
             self._booleanBld = work_part.Features.CreateBooleanBuilderUsingCollector( NXOpen.Features.BooleanFeature.Null)
             
@@ -61,13 +62,14 @@ class BooleanBuilder(FeatureBuilder):
         except Exception:
             logger.exception("Failed creating BooleanBuilder")
             if self._extrudeBld is not None:
-                self.destroy()
+                self._destroy()
             raise
 
     @property
     def nx_builder(self) -> NXOpen.Features.BooleanBuilder:
         return self._booleanBld
     
+    # @builder_operation
     # def region(
     #     self,
     #     keep_remove_target: KeepRemoveOption = KeepRemoveOption.Keep,
@@ -76,27 +78,19 @@ class BooleanBuilder(FeatureBuilder):
     #     region_select = self.booleanBuilder1.BooleanRegionSelect
     #     region_select.KeepRemoveTargetMethod = keep_remove_target
     #     region_select.KeepRemoveToolMethod = keep_remove_tool
-    #     return self
-
+    #     return 
+    
+    @builder_operation
     def settings(
         self,
         tolerance: float | None = None,
         keep_target: bool = False,
         keep_tool: bool = False,
         convert_to_sew: bool = False,
-    ) -> BooleanBuilder:
-        try:
-            if tolerance is not None:
-                if not math.isfinite(tolerance) or tolerance <= 0:
-                    raise ValueError("tolerance must be a finite positive number.")
-                self._booleanBld.Tolerance = tolerance
-
-            self._booleanBld.CopyTargets = keep_target
-            self._booleanBld.CopyTools = keep_tool
-            self._booleanBld.ConvertToSew = convert_to_sew
-        except Exception:
-            logger.exception("Failed applying extrude settings")
-            if self._extrudeBld is not None:
-                self.destroy()
-            raise
+    ) -> BooleanBuilder:                
+        self._validate_tolerance(tolerance)
+        self._booleanBld.Tolerance = self.distance_tolerance
+        self._booleanBld.CopyTargets = keep_target
+        self._booleanBld.CopyTools = keep_tool
+        self._booleanBld.ConvertToSew = convert_to_sew
         return self

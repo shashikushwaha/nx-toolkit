@@ -1,8 +1,9 @@
 import math
+from typing import Union
 import NXOpen
-
+Number = Union[int, float]
 class Vector3d:
-    def __init__(self, x: float, y: float, z: float):
+    def __init__(self, x: Number, y: Number, z: Number):
         if not all(isinstance(coord, (int, float)) for coord in (x, y, z)):
             raise TypeError("Coordinates must be numeric values.")
         if not all(math.isfinite(coord) for coord in (x, y, z)):
@@ -16,7 +17,7 @@ class Vector3d:
 
     @property
     def to_nx(self) -> NXOpen.Vector3d:
-        return  NXOpen.Vector3d(self.x, self.y, self.z)
+        return  NXOpen.Vector3d(float(self.x), float(self.y), float(self.z))
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Vector3d):

@@ -16,9 +16,11 @@ class Builder(BaseBuilder):
                 raise ValueError("Non-associative NX Object not found")
             return committed_objects
         except NXOpen.NXException as error:
-            self.undo_mark()
+            self._undo_mark()
             should_destroy = False
             raise ValueError(error.Message) from error
         finally:
             if should_destroy:
-                self.destroy()
+                self._destroy()
+
+    

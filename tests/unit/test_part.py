@@ -138,8 +138,8 @@ class TestPart:
 
     def test_failed_get_edge_name(self, part_factory):
         part_factory("face.prt")
-        with pytest.raises(ValueError, match=r"EDGE_011 not found\."):
-            Part.get_edges("EDGE_011")
+        with pytest.raises(ValueError, match=r"EDGE_01111 not found\."):
+            Part.get_edges("EDGE_01111")
 
     def test_failed_get_face_name(self, part_factory):
         part_factory("face.prt")

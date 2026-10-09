@@ -6,7 +6,7 @@ import NXOpen
 import NXOpen.GeometricUtilities
 import NXOpen.Features
 
-from nxopenkit.core.edge import Edge
+from nxopenkit.core.icurve import ICurve
 from nxopenkit.modeling.revolve_builder import RevolveBuilder
 from nxopenkit.core.part import Part
 from nxopenkit.maths.vector3d import Vector3d
@@ -14,16 +14,16 @@ from nxopenkit.maths.vector3d import Vector3d
 
 @pytest.fixture
 def setup(project_root: Path):
-    file_path = str(project_root / "test-cases" / "body.prt")
+    file_path = str(project_root / "test-cases" / "face.prt")
     Part.open_part(file_path)
-    edges = Part.get_faces("FACE_016")[0].get_edges()
+    edges = Part.get_edges("EDGE_08")
     yield edges
     Part.close_all()
 
 @pytest.fixture
-def revolve_builder_factory(setup: List[Edge]):
+def revolve_builder_factory(setup: List[ICurve]):
     def _make_builder():
-        return RevolveBuilder(setup, "0", 10, direction=Vector3d(0, 0, 1))    
+        return RevolveBuilder(setup, Vector3d(0, 0, 1), "0", 360)    
     return _make_builder
 
 
@@ -43,8 +43,7 @@ class TestRevolveBuilder:
     def test_extrude_and_commit_feature(self, revolve_builder_factory: Callable[[], RevolveBuilder], project_root: Path):
         builder = revolve_builder_factory()
         feature = builder.commit_feature()
-        # file_path = str(project_root / "test-cases" / "temp" / "test.prt")
-        # Part.save_as(file_path)
+        Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt", True)
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
     def test_extrude_and_commit(self, revolve_builder_factory: Callable[[], RevolveBuilder]):
