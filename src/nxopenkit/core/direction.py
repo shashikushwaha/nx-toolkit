@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import cast
 
 import NXOpen
+from nxopenkit.maths.point3d import Point3d
+from nxopenkit.maths.vector3d import Vector3d
 # from nxopenkit.core import direction
 from .part import Part
 from .displayable_object import DisplayableObject
@@ -19,14 +21,14 @@ class Direction(DisplayableObject):
 
     @staticmethod
     def create_direction_from_vector(
-        origin: NXOpen.Point3d,
-        vector: NXOpen.Vector3d,
+        origin: Point3d,
+        vector: Vector3d,
         update_option: NXOpen.SmartObject.UpdateOption = NXOpen.SmartObject.UpdateOption.WithinModeling
     ) -> "Direction":
 
        direction = Part.work_part().to_nx.Directions.CreateDirection(
-                   origin,
-                   vector,
+                   origin.to_nx,
+                   vector.to_nx,
                    update_option
         )
        return Direction(direction)

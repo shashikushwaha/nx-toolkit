@@ -1,16 +1,23 @@
+import math
+
 import NXOpen
 from .vector3d import Vector3d
-
+from typing import Union
+Number = Union[int, float]
 
 class Point3d:
-    def __init__(self, x: float, y: float, z: float):
+    def __init__(self, x: Number, y: Number, z: Number):
+        if not all(isinstance(coord, (int, float)) for coord in (x, y, z)):
+            raise TypeError("Coordinates must be numeric values.")
+        if not all(math.isfinite(coord) for coord in (x, y, z)):
+            raise ValueError("Coordinates must be finite numbers.")
         self.x = x
         self.y = y
         self.z = z
 
     @property
     def to_nx(self) -> NXOpen.Point3d:
-        return NXOpen.Point3d(self.x, self.y, self.z)
+        return NXOpen.Point3d(float(self.x), float(self.y), float(self.z))
 
     def __str__(self):
         return f"Point3d({self.x}, {self.y}, {self.z})"

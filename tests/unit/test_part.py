@@ -36,12 +36,12 @@ class TestPart:
     def test_get_edges(self, part_factory):
         part_factory("face.prt")
         all_edges = Part.get_edges()
-        assert len(all_edges) == 24
+        assert len(all_edges) == 12
 
     def test_get_displayable_objects(self, part_factory):
         part_factory("face.prt")
         all_displayables = Part.get_displayable_objects()
-        assert len(all_displayables) == 40
+        assert len(all_displayables) == 29
         assert all(obj.to_nx is not None for obj in all_displayables)
 
     def test_get_part(self, part_factory):

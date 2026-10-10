@@ -3,6 +3,8 @@ from typing import List
 
 class TaggedObject:
     def __init__(self, tagged_object: NXOpen.TaggedObject):
+        self.session = NXOpen.Session.GetSession()
+        self.workPart = self.session.Parts.Work 
         self.tagged_object = tagged_object
 
     # def __eq__(self, other):

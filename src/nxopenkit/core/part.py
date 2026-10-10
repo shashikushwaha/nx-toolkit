@@ -1,5 +1,4 @@
-import sys
-import math
+from __future__ import annotations
 import os
 import NXOpen
 
@@ -20,8 +19,6 @@ from .feature import Feature
 
 class Part(NamedObject) :    
     def __init__(self, nxOpenPart : NXOpen.Part):      
-        self.session = NXOpen.Session.GetSession()
-        self.workPart = self.session.Parts.Work 
         super().__init__(nxOpenPart)    
 
     @property
@@ -33,19 +30,19 @@ class Part(NamedObject) :
         return NXOpen.Session.GetSession()
 
     @staticmethod
-    def uf_session() -> "NXOpen.UF.UFSession":
+    def uf_session() -> NXOpen.UF.UFSession:
         # import NXOpen.UF
         return NXOpen.UF.UFSession.GetUFSession()
 
     @staticmethod
-    def work_part() -> "Part":
+    def work_part() -> Part:
         workPart : NXOpen.Part = Part.session().Parts.Work
         if(workPart is None):
             raise ValueError("No work part found. check NX License.")
         return Part(workPart)
  
     @staticmethod
-    def open_part(filePath)-> "Part":
+    def open_part(filePath)-> Part:
         results = Part.session().Parts.OpenActiveDisplay(filePath, NXOpen.DisplayPartOption.AllowAdditional)
         openPart = results[0]
         part1 = Part(openPart)   
@@ -96,8 +93,7 @@ class Part(NamedObject) :
         all_edges = [
             Edge(edge)
             for body in Part.work_part().to_nx.Bodies
-            for face in body.GetFaces()
-            for edge in face.GetEdges()
+            for edge in body.GetEdges()
         ]
         if name is None:
             return all_edges

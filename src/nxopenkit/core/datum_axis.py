@@ -1,5 +1,4 @@
 from typing import cast
-import sys
 import NXOpen
 from .displayable_object import DisplayableObject
 

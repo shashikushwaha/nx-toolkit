@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 import logging
-import math
 import NXOpen
 import NXOpen.Features
 import NXOpen.GeometricUtilities
@@ -13,6 +12,7 @@ from nxopenkit.core.body import Body
 from nxopenkit.core.icurve import ICurve
 from nxopenkit.core.part import Part
 from nxopenkit.core.direction import Direction
+from nxopenkit.core.point import Point
 from nxopenkit.maths.vector3d import Vector3d
 from .decorators import builder_operation
 
@@ -25,6 +25,7 @@ class RevolveBuilder(FeatureBuilder):
         self,
         curves: Sequence[ICurve],
         direction: DatumAxis | Direction | Vector3d,
+        axis_point : Point,
         start_angle: float | str = 0,
         end_angle: float | str = 360,
     ):
@@ -35,6 +36,7 @@ class RevolveBuilder(FeatureBuilder):
 
         self.curves = list(curves)
         self.axis = self._to_datum_axis(direction)
+        self.axis_point = axis_point.to_nx
         self.start_angle = start_angle
         self.end_angle = end_angle
         super().__init__()        
@@ -54,7 +56,7 @@ class RevolveBuilder(FeatureBuilder):
             )
             section.SetAllowedEntityTypes( NXOpen.Section.AllowTypes.OnlyCurves)
 
-            nx_curves = [ curve.to_nx for curve in self.curves]
+            nx_curves = [curve.to_nx for curve in self.curves]
 
             curve_rule = work_part.ScRuleFactory.CreateRuleBaseCurveDumb(nx_curves)
 
@@ -68,13 +70,19 @@ class RevolveBuilder(FeatureBuilder):
                 False,
             )
 
-            self._revolveBld.Section = section           
+            self._revolveBld.Section = section 
+            self.axis.Point = self.axis_point
+            self._revolveBld.Axis = self.axis          
             self._revolveBld.Limits.StartExtend.Value.SetFormula(str(start_angle))           
             self._revolveBld.Limits.EndExtend.Value.SetFormula(str(end_angle))
-
+            self.settings()
         except Exception:
             self._destroy()
             raise
+
+    @property
+    def nx_builder(self) -> NXOpen.Features.RevolveBuilder:
+        return self._revolveBld
 
     @builder_operation
     def settings(
@@ -83,9 +91,7 @@ class RevolveBuilder(FeatureBuilder):
         tolerance: float | None = None,
     ) -> RevolveBuilder:
         self._validate_tolerance(tolerance)
-        self._revolveBld.DistanceTolerance = self.distance_tolerance
-        self._revolveBld.ChainingTolerance = self.chaining_tolerance
-        self._revolveBld.AngularTolerance = self.angle_tolerance
+        self._revolveBld.Tolerance = self.distance_tolerance
         self._revolveBld.FeatureOptions.BodyType = body_type
         return self
 
@@ -105,16 +111,6 @@ class RevolveBuilder(FeatureBuilder):
         return self
     
     @builder_operation
-    def angles(
-        self,
-        start_angle: float | str,
-        end_angle: float | str,
-    ) -> RevolveBuilder:
-        self._revolveBld.Limits.StartExtend.SetValue(str(start_angle))
-        self._revolveBld.Limits.EndExtend.SetValue(str(end_angle))
-        return self
-    
-    @builder_operation
     def offset(
         self,
         offset_option: NXOpen.GeometricUtilities.Type,
@@ -131,44 +127,3 @@ class RevolveBuilder(FeatureBuilder):
             self._revolveBld.Offset.SetStartOffset(str(start_offset))
             
         return self
-
-    def _to_datum_axis(
-    self,
-    axis: DatumAxis | Direction | Vector3d,
-    ) -> DatumAxis:
-
-        if isinstance(axis, DatumAxis):
-            return axis
-        work_part = Part.work_part().to_nx
-        if isinstance(axis, Vector3d):
-            nx_direction = (
-                    work_part.Directions.CreateDirection(
-                    NXOpen.Point3d(0.0, 0.0, 0.0),
-                    axis.to_nx,
-                    NXOpen.SmartObject.UpdateOption.WithinModeling,
-                )
-            )
-
-            nx_axis = (
-                    work_part.Axes.CreateAxis(
-                    NXOpen.Point.Null,
-                    nx_direction,
-                    NXOpen.SmartObject.UpdateOption.WithinModeling,
-                )
-            )
-
-            return DatumAxis(nx_axis)
-
-        if isinstance(axis, Direction):
-
-            nx_axis = (
-                    work_part.Axes.CreateAxis(
-                    NXOpen.Point.Null,
-                    axis.to_nx,
-                    NXOpen.SmartObject.UpdateOption.WithinModeling,
-                )
-            )
-
-            return DatumAxis(nx_axis)
-
-        raise TypeError("direction must be DatumAxis, Direction, or Vector3d.")
