@@ -11,6 +11,9 @@ class NamedObject(TaggedObject):
 
     @property
     def to_nx(self) -> NXOpen.NXObject:
+        if self.tagged_object is None:
+            raise ValueError("NX object is not initialized")
+
         return cast(NXOpen.NXObject, self.tagged_object)
 
     @property

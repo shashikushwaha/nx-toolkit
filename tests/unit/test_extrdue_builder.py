@@ -43,8 +43,6 @@ class TestExtrudeBuilder:
     def test_extrude_and_commit_feature(self, extrude_builder_factory: Callable[[], ExtrudeBuilder], project_root: Path):
         builder = extrude_builder_factory()
         feature = builder.commit_feature()
-        # file_path = str(project_root / "test-cases" / "temp" / "test.prt")
-        # Part.save_as(file_path)
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
     def test_extrude_and_commit(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
@@ -56,14 +54,12 @@ class TestExtrudeBuilder:
         builder = extrude_builder_factory()
         builder.draft(NXOpen.GeometricUtilities.SimpleDraft.SimpleDraftType.SimpleFromProfile, "3.0")        
         feature = builder.commit_feature()
-        Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt", True)
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
     def test_draft_with_angle_option(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
         builder = extrude_builder_factory()
         builder.draft(NXOpen.GeometricUtilities.SimpleDraft.SimpleDraftType.SimpleFromProfile, "3", NXOpen.GeometricUtilities.MultiDraft.AngleOption.Multiple)
         feature = builder.commit_feature()
-        Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt", True)
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
     def test_boolean_and_commit_feature(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
@@ -78,7 +74,6 @@ class TestExtrudeBuilder:
             "-5", 5)
         builder.draft(NXOpen.GeometricUtilities.SimpleDraft.SimpleDraftType.SimpleFromProfile, "3.0")
         feature = builder.commit_feature()
-        Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt", True)
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
     def test_boolean(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
@@ -90,6 +85,5 @@ class TestExtrudeBuilder:
         assert builder.nx_builder.BooleanOperation.Type == NXOpen.GeometricUtilities.BooleanOperation.BooleanType.Unite
         assert result is builder
         feature = builder.commit_feature()
-        Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt", True)
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
          

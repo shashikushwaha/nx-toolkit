@@ -28,12 +28,12 @@ def setup(project_root: Path):
 
 @pytest.fixture
 def block_builder_factory(setup):
-    origin_point, first_point, second_point = setup
+    origin_point1, first_point, second_point1 = setup
     xc_length = 100
     def _make_builder(
             type = NXOpen.Features.BlockFeatureBuilder.Types.OriginAndEdgeLengths,
-            origin_point1 = None,
-            second_point1 = None,
+            origin_point = None,
+            second_point = None,
             xc_length1 =  None,
             yc_length1 = None,
             zc_length1 = None,
@@ -50,34 +50,38 @@ def block_builder_factory(setup):
 
 
 class TestBlock:
-    def test_rejects_empty_profile_curves(self):
-        with pytest.raises(ValueError, match="At least one profile curve"):
-            Block([])
+    def test_reject_origin_point_none(self):
+            with pytest.raises(TypeError, match="origin_point"):
+                Block(NXOpen.Features.BlockFeatureBuilder.Types.OriginAndEdgeLengths, None)
 
 
-    def test_revolve_and_commit_feature(self, block_builder_factory: Callable[..., Block]):
+    def test_block_and_commit_feature(self, block_builder_factory: Callable[..., Block]):
         builder = block_builder_factory()
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Block)
 
-    def test_revolve_and_commit(self, block_builder_factory: Callable[..., Block]):
+    def test_block_and_commit(self, block_builder_factory: Callable[..., Block]):
         builder = block_builder_factory()
         committed_objects = builder.commit()
         assert isinstance(committed_objects[0], NXOpen.Features.Block)
 
-    def test_boolean_and_commit_feature(self, block_builder_factory: Callable[..., Block]):
-        builder = block_builder_factory()
+    # @pytest.mark.parametrize("type", [NXOpen.Features.BlockFeatureBuilder.Types.TwoPointsAndHeight, NXOpen.Features.BlockFeatureBuilder.Types.DiagonalPoints])
+    def test_block_by_two_points_and_height(self, block_builder_factory: Callable[..., Block]):
+        builder = block_builder_factory(type = NXOpen.Features.BlockFeatureBuilder.Types.TwoPointsAndHeight)
         feature = builder.commit_feature()
-        Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt")
+        assert isinstance(feature.to_nx, NXOpen.Features.Block)
+
+    def test_block_by_diagonal_point(self, block_builder_factory: Callable[..., Block]):
+        second_point = Point.create_point(Point3d(100, 100, 100))
+        builder = block_builder_factory(type = NXOpen.Features.BlockFeatureBuilder.Types.DiagonalPoints, second_point = second_point)
+        feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Block)
 
     def test_boolean(self, block_builder_factory: Callable[..., Block]):
-        bodies = Part.get_bodies("BODY_01")
+        bodies = Part.get_bodies("BODY_01")[0]
         builder = block_builder_factory()        
-        result = builder.boolean(
-            NXOpen.GeometricUtilities.BooleanOperation.BooleanType.Unite,
-            bodies)
-        assert builder.nx_builder.BooleanOperation.Type == NXOpen.GeometricUtilities.BooleanOperation.BooleanType.Unite
+        result = builder.boolean(NXOpen.Features.Feature.BooleanType.Unite, bodies)
+        assert builder.nx_builder.BooleanType == NXOpen.Features.Feature.BooleanType.Unite
         assert result is builder
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Block)

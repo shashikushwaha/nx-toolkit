@@ -37,7 +37,16 @@ class TestDirection:
 
     def test_create_direction_from_vector(self, direction_mocks):
         nx_direction, directions = direction_mocks
-        assert_factory_result(Direction.create_direction_from_vector, directions, nx_direction, "origin", "vector", "update")
+        origin = Mock()
+        origin.to_nx = object()
+        vector = Mock()
+        vector.to_nx = object()
+
+        result = Direction.create_direction_from_vector(origin, vector, "update")
+
+        assert isinstance(result, Direction)
+        assert result.to_nx is nx_direction
+        directions.CreateDirection.assert_called_once_with(origin.to_nx, vector.to_nx, "update")
 
     def test_create_direction_from_line(self, direction_mocks):
         nx_direction, directions = direction_mocks

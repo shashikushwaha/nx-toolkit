@@ -67,14 +67,12 @@ class TestRevolveBuilder:
         axis = Part.get_datum_axes("AXIS_01")
         with pytest.raises(TypeError, match="direction must be DatumAxis, Direction, or Vector3d"):
             revolve_builder_factory(direction = axis)
-        # Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt")
 
     def test_revolve_with_datum_axis(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
         axis = Part.get_datum_axes("AXIS_01")[0]
         builder = revolve_builder_factory(direction=axis)
         feature = builder.commit_feature()        
         parent = feature.to_nx.GetParents()
-        # Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt")
         assert isinstance(feature.to_nx, NXOpen.Features.Revolve)
         assert any(isinstance(f, NXOpen.Features.DatumAxisFeature) for f in parent)
     
@@ -82,7 +80,6 @@ class TestRevolveBuilder:
         axis = Direction.create_direction_from_vector(Point3d(0,0,0), Vector3d(0,0,1))
         builder = revolve_builder_factory(direction=axis)
         feature = builder.commit_feature()        
-        # Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt")
         assert isinstance(feature.to_nx, NXOpen.Features.Revolve)
 
     def test_revolve_and_commit(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
