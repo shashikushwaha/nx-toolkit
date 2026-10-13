@@ -14,7 +14,8 @@ from nxopenkit.core.part import Part
 from nxopenkit.core.direction import Direction
 from nxopenkit.core.point import Point
 from nxopenkit.maths.vector3d import Vector3d
-from .decorators import builder_operation
+from nxopenkit.core.converters import to_nx_axis
+from ..core.decorators import builder_operation
 
 from .feature_builder import FeatureBuilder
 logger = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ class RevolveBuilder(FeatureBuilder):
         
 
         self.curves = list(curves)
-        self.axis = self._to_datum_axis(direction)
+        self.axis = to_nx_axis(direction)
         self.axis_point = axis_point.to_nx
         self.start_angle = start_angle
         self.end_angle = end_angle

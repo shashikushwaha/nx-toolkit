@@ -11,7 +11,7 @@ import NXOpen.Features
 from .feature_builder import FeatureBuilder
 from nxopenkit.core.part import Part
 from nxopenkit.core.body import Body
-from .decorators import builder_operation
+from nxopenkit.core.decorators import builder_operation
 logger = logging.getLogger(__name__)
 # if TYPE_CHECKING:
 #     from nxopenkit.core.body import Body

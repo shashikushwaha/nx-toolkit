@@ -42,42 +42,4 @@ class BaseBuilder():
         self.distance_tolerance = tolerance
         self.chaining_tolerance = 0.95*tolerance
 
-    def _to_datum_axis(self, axis: Union[DatumAxis, Direction, Vector3d]):
-        work_part = Part.work_part().to_nx
-        if isinstance(axis, DatumAxis):
-            direction1 = work_part.Directions.CreateDirection(axis.to_nx, NXOpen.Sense.Forward, NXOpen.SmartObject.UpdateOption.WithinModeling)    
-            axis1 = work_part.Axes.CreateAxis(NXOpen.Point.Null, direction1, NXOpen.SmartObject.UpdateOption.WithinModeling)
-            return axis1
-        
-        if isinstance(axis, Vector3d):
-            nx_direction = (
-                    work_part.Directions.CreateDirection(
-                    NXOpen.Point3d(0.0, 0.0, 0.0),
-                    axis.to_nx,
-                    NXOpen.SmartObject.UpdateOption.WithinModeling,
-                )
-            )
-
-            nx_axis = (
-                    work_part.Axes.CreateAxis(
-                    NXOpen.Point.Null,
-                    nx_direction,
-                    NXOpen.SmartObject.UpdateOption.WithinModeling,
-                )
-            )
-
-            return nx_axis
-
-        if isinstance(axis, Direction):
-
-            nx_axis = (
-                    work_part.Axes.CreateAxis(
-                    NXOpen.Point.Null,
-                    axis.to_nx,
-                    NXOpen.SmartObject.UpdateOption.WithinModeling,
-                )
-            )
-
-            return nx_axis
-
-        raise TypeError("direction must be DatumAxis, Direction, or Vector3d.")
+    

@@ -14,7 +14,7 @@ from nxopenkit.core.part import Part
 from nxopenkit.maths.vector3d import Vector3d
 
 from .feature_builder import FeatureBuilder
-from .decorators import builder_operation
+from ..core.decorators import builder_operation
 
 
 logger = logging.getLogger(__name__)

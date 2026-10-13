@@ -1,7 +1,4 @@
 from __future__ import annotations
-
-from collections.abc import Sequence
-
 import logging
 import NXOpen
 import NXOpen.Features
@@ -14,7 +11,7 @@ from nxopenkit.core.part import Part
 from nxopenkit.core.direction import Direction
 from nxopenkit.core.point import Point
 from nxopenkit.maths.vector3d import Vector3d
-from .decorators import builder_operation
+from ..core.decorators import builder_operation
 
 from .feature_builder import FeatureBuilder
 logger = logging.getLogger(__name__)
@@ -50,6 +47,7 @@ class Block(FeatureBuilder):
             self.feature_builder = self._blockBld
             self.builder = self._blockBld
             self._blockBld.OriginPoint = self.origin_point
+            self._blockBld.Type = self.type
             if(self.type == NXOpen.Features.BlockFeatureBuilder.Types.OriginAndEdgeLengths):
                 self._blockBld.SetOriginAndLengths(self.origin_point.Coordinates, self.xc_length, self.yc_length, self.zc_height_length)
 
