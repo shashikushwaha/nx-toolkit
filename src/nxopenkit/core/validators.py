@@ -1,4 +1,5 @@
 import math
+from typing import Union
 from .types import Double
 
 
@@ -53,7 +54,7 @@ def validate_positive_double(
     
 
 def validate_tolerance(
-    tolerance: float | None,
+    tolerance: Union[float, None],
 ) ->  None:
 
     if tolerance is None:
