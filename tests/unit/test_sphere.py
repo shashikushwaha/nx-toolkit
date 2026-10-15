@@ -68,7 +68,6 @@ class TestSphere:
         arc = Part.get_curves("ARC_01")[0]
         builder = builder_factory(SphereType.Arc, arc = arc)
         feature = builder.commit_feature()
-        Part.save_as(r"C:\D\Shashi\nx-toolkit\test-cases\temp\test.prt")
         assert isinstance(feature.to_nx, NXOpen.Features.Sphere)
 
     def test_cylinder_and_commit(self, builder_factory: Callable[..., Sphere]):

@@ -4,6 +4,8 @@ import NXOpen
 
 
 from typing import List, Optional
+
+from nxopenkit.core.session import Session
 from .named_object import NamedObject
 from .body import Body
 from .displayable_object import DisplayableObject
@@ -31,12 +33,11 @@ class Part(NamedObject) :
 
     @staticmethod
     def uf_session() -> NXOpen.UF.UFSession:
-        # import NXOpen.UF
-        return NXOpen.UF.UFSession.GetUFSession()
+        return Session.uf_session()
 
     @staticmethod
     def work_part() -> Part:
-        workPart : NXOpen.Part = Part.session().Parts.Work
+        workPart : NXOpen.Part = Session.work_part()
         if(workPart is None):
             raise ValueError("No work part found. check NX License.")
         return Part(workPart)

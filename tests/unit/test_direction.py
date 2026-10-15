@@ -1,4 +1,5 @@
 from unittest.mock import Mock, patch
+from nxopenkit.core.part import Part
 
 import pytest
 # import NXOpen
@@ -16,9 +17,9 @@ def direction_mocks():
     nx_direction = object()
     directions = Mock()
     work_part = Mock()
-    work_part.to_nx.Directions = directions
+    work_part.Directions = directions
     directions.CreateDirection.return_value = nx_direction
-    with patch("nxopenkit.core.direction.Part.work_part", return_value=work_part):
+    with patch("nxopenkit.core.direction.Session.work_part", return_value=work_part):
         yield nx_direction, directions
 
 

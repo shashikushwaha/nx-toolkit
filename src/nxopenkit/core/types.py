@@ -9,6 +9,8 @@ from nxopenkit.maths.vector3d import Vector3d
 CylinderType = NXOpen.Features.CylinderBuilder.Types
 BooleanType = NXOpen.GeometricUtilities.BooleanOperation.BooleanType
 SphereType = NXOpen.Features.SphereBuilder.Types
+PointOnCurveLocationOption = NXOpen.PointCollection.PointOnCurveLocationOption
+
 
 Number = Union[int, float]
 Angle = Union[int, float, str]
