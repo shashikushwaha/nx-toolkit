@@ -140,7 +140,7 @@ class Part(NamedObject) :
 
     
     @staticmethod
-    def get_features(name: Optional[str] = None) -> List[NXOpen.Features.Feature]:
+    def get_features(name: Optional[str] = None) -> List[Feature]:
         feature_collection : NXOpen.Features.FeatureCollection = Part.work_part().to_nx.Features
         all_features = []
         for one_feature in feature_collection:

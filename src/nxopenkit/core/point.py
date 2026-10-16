@@ -35,14 +35,15 @@ class Point(DisplayableObject):
         if curves_edges is None:
                 raise ValueError(f"curves_edges is required.")
         # nx_icurve = [one_cr.to_nx for one_cr in curves_edges]
+        
         comp_curve = Curve.create_composite_curve(curves_edges=curves_edges, help_point=help_point)
-        scalar = Session.work_part().Scalars.CreateScalar(float(percentage), NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
+        sclr_expr = Session.work_part().Expressions.CreateSystemExpression(str(percentage))
+        scalar = Session.work_part().Scalars.CreateScalarExpression(sclr_expr, NXOpen.Scalar.DimensionalityType.NotSet, NXOpen.SmartObject.UpdateOption.WithinModeling)
         nx_point = NXOpen.Session.GetSession().Parts.Work.Points.CreatePoint(
             comp_curve.to_nx,
             scalar,
             location_option,
-            NXOpen.Point.Null,
-            update_option=NXOpen.SmartObject.UpdateOption.WithinModeling,
+            NXOpen.SmartObject.UpdateOption.WithinModeling,
 
         )
         return Point(nx_point)

@@ -14,8 +14,10 @@ from .displayable_object import DisplayableObject
 from .named_object import NamedObject
 from .tagged_object import TaggedObject
 from .point import Point
+from .measurement import Measurement
+from .session import Session
 
 __all__ = ["Body", "Edge", "Face", "Feature", 
            "ICurve", "Part", "UFManager","DatumAxis", 
            "DatumPlane", "CoordinateSystem", "ISurface",
-           "DisplayableObject", "NamedObject", "TaggedObject", "Point"]
+           "DisplayableObject", "NamedObject", "TaggedObject", "Point", "Measurement", "Session"]

@@ -1,6 +1,8 @@
+from __future__ import annotations
 import math
 
 import NXOpen
+from nxopenkit.core.types import Double
 from .vector3d import Vector3d
 from typing import Union
 Number = Union[int, float]
@@ -18,6 +20,10 @@ class Point3d:
     @property
     def to_nx(self) -> NXOpen.Point3d:
         return NXOpen.Point3d(float(self.x), float(self.y), float(self.z))
+    
+    @property
+    def to_array(self) -> list[Double]:        
+        return [self.x, self.y, self.z]
 
     def __str__(self):
         return f"Point3d({self.x}, {self.y}, {self.z})"

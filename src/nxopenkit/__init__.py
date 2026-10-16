@@ -7,13 +7,6 @@ if ugii_base_dir:
     sys.path.append(os.path.join(ugii_base_dir, "NXBIN", "python"))
     # os.add_dll_directory(os.path.join(ugii_base_dir, "NXBIN"))
     # os.environ["PYTHONPATH"] = os.path.join(ugii_base_dir, "NXBIN", "python") + os.pathsep + os.environ.get("PYTHONPATH", "")
-
-try:
-    import NXOpen
-except Exception:  # pragma: no cover - optional NX runtime dependency
-    NXOpen = None
-
-if NXOpen is not None:
     from .core.body import Body 
     from .core.edge import Edge
     from .core.face import Face
@@ -34,10 +27,7 @@ if NXOpen is not None:
     from .maths.vector3d import Vector3d
     from .maths.point3d import Point3d 
     from .maths.matrix3x3 import Matrix3X3
-else:
-    from .maths.vector3d import Vector3d
-    from .maths.point3d import Point3d 
-    from .maths.matrix3x3 import Matrix3X3
+
 
 __version__ = "0.1.0"
 

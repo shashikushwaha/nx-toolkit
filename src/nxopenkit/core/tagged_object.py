@@ -1,5 +1,7 @@
+from __future__ import annotations
+from dataclasses import dataclass
 import NXOpen
-from typing import List
+from typing import List, Sequence
 
 class TaggedObject:
     def __init__(self, tagged_object: NXOpen.TaggedObject):
@@ -40,4 +42,3 @@ class TaggedObject:
     @staticmethod
     def to_nx_all(objs : List["TaggedObject"]):
         return[obj.to_nx for obj in objs]
-    
