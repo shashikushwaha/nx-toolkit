@@ -15,9 +15,11 @@ class Body(DisplayableObject):
     def to_nx(self) -> NXOpen.Body:
         return cast(NXOpen.Body, super().to_nx)
 
+    @property
     def get_faces(self) -> List[Face] :
         return [Face(face) for face in self.to_nx.GetFaces()]
 
+    @property
     def get_edges(self) -> List[Edge] :
         return [Edge(edge) for edge in self.to_nx.GetEdges()]
 

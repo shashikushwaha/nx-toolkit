@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Sequence, cast
 import NXOpen
+from nxopenkit.core.measurement import Measurement
 from nxopenkit.core.session import Session
 from nxopenkit.maths.point3d import Point3d
 from .displayable_object import DisplayableObject
@@ -19,8 +20,9 @@ class Curve(DisplayableObject, ICurve):
     def create_composite_curve(curves_edges :Sequence[ICurve], help_point : Point3d = Point3d(0,0,0)) -> Curve:
         if curves_edges is None:
             raise ValueError(f"curves_edges is required.")
-        nx_icurve = [base.to_nx for base in curves_edges]
         work_part =  Session.work_part()
+        mear_result = Measurement.get_closest_object(help_point, curves_edges)
+        nx_icurve = [base.to_nx for base in curves_edges]
         selectionIntentRuleOptions1 = work_part.ScRuleFactory.CreateRuleOptions()    
         selectionIntentRuleOptions1.SetSelectedFromInactive(False)    
         icurve_rule = work_part.ScRuleFactory.CreateRuleBaseCurveDumb(nx_icurve, selectionIntentRuleOptions1)    
@@ -32,7 +34,7 @@ class Curve(DisplayableObject, ICurve):
         section1.AllowSelfIntersection(True)
         rules1 = [None] * 1 
         rules1[0] = icurve_rule
-        section1.AddToSection(rules1, nx_icurve[0], nx_icurve[0], NXOpen.NXObject.Null, help_point.to_nx, NXOpen.Section.Mode.Create, False)
+        section1.AddToSection(rules1, mear_result.destination_object.to_nx, mear_result.destination_object.to_nx, NXOpen.NXObject.Null, help_point.to_nx, NXOpen.Section.Mode.Create, False)
         comp_curve = Session.work_part().Curves.CreateSmartCompositeCurve(section1, NXOpen.SmartObject.UpdateOption.WithinModeling, distance_tolerance)
         return Curve(comp_curve)
 

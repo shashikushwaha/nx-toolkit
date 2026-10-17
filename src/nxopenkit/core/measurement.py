@@ -19,8 +19,8 @@ class MinimumDistanceResult:
 @dataclass
 class ClosestObjectResult:
     distance : float
-    source_object: object
-    destination_object : object
+    source_object: TaggedObject
+    destination_object : TaggedObject
     point_on_source : Point3d
     point_on_destination: Point3d
 
@@ -68,22 +68,19 @@ class Measurement:
 
     @staticmethod
     def get_closest_object(
-        source: TaggedObject,
+        source: Union[TaggedObject, Point3d],
         candidates: Sequence[TaggedObject],
     ) -> ClosestObjectResult:
-
-        uf = NXOpen.UF.UFSession.GetUFSession()
-
         closest_obj = None
         point_on_source = None
         point_on_destination = None
         min_distance = float("inf")
         for candidate in candidates:
 
-            if candidate.Tag == source.Tag:
+            if not isinstance(source, Point3d) and candidate.tag == source.tag:
                 continue
 
-            distance_result = Measurement.get_minimum_dist(source.Tag, candidate.Tag)
+            distance_result = Measurement.get_minimum_dist(source, candidate)
             if distance_result.distance < min_distance:
                 min_distance = distance_result.distance
                 closest_obj = candidate
@@ -95,9 +92,7 @@ class Measurement:
             source_object=source,
             destination_object= closest_obj,
             point_on_source=point_on_source,
-            point_on_destination=point_on_destination,
-            object=closest_obj,
-            
+            point_on_destination=point_on_destination,            
         )
 
     @staticmethod

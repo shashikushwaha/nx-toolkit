@@ -17,16 +17,22 @@ class Point3d:
         self.y = y
         self.z = z
 
+    @classmethod
+    def from_nx(cls, point : NXOpen.Point3d):
+        return cls(point.X, point.Y, point.Z)
+
     @property
     def to_nx(self) -> NXOpen.Point3d:
         return NXOpen.Point3d(float(self.x), float(self.y), float(self.z))
     
     @property
     def to_array(self) -> list[Double]:        
-        return [self.x, self.y, self.z]
+        return [float(self.x), float(self.y), float(self.z)]
 
     def __str__(self):
         return f"Point3d({self.x}, {self.y}, {self.z})"
+
+    __repr__ = __str__
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Point3d):
