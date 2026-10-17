@@ -7,7 +7,7 @@ import NXOpen.GeometricUtilities
 import NXOpen.Features
 
 from nxopenkit.core.edge import Edge
-from nxopenkit.modeling.extrude_builder import ExtrudeBuilder
+from nxopenkit.features.extrude import Extrude
 from nxopenkit.core.part import Part
 from nxopenkit.maths.vector3d import Vector3d
 
@@ -21,54 +21,54 @@ def setup(project_root: Path):
     Part.close_all()
 
 @pytest.fixture
-def extrude_builder_factory(setup: List[Edge]):
+def extrude_factory(setup: List[Edge]):
     def _make_builder():
-        return ExtrudeBuilder(setup, "0", 10, direction=Vector3d(0, 0, 1))    
+        return Extrude(setup, "0", 10, direction=Vector3d(0, 0, 1))    
     return _make_builder
 
 
-class TestExtrudeBuilder:
+class TestExtrude:
     def test_rejects_empty_profile_curves(self):
         with pytest.raises(ValueError, match="At least one profile curve"):
-            ExtrudeBuilder([], 10.0)
+            Extrude([], 10.0)
 
-    def test_settings_update_distance_and_return_builder(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
-        builder = extrude_builder_factory()
+    def test_settings_update_distance_and_return_builder(self, extrude_factory: Callable[[], Extrude]):
+        builder = extrude_factory()
         result = builder.settings(NXOpen.GeometricUtilities.FeatureOptions.BodyStyle.Sheet, tolerance=0.0001)
         assert result is builder
         assert builder.nx_builder.FeatureOptions.BodyType == NXOpen.GeometricUtilities.FeatureOptions.BodyStyle.Sheet
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
-    def test_extrude_and_commit_feature(self, extrude_builder_factory: Callable[[], ExtrudeBuilder], project_root: Path):
-        builder = extrude_builder_factory()
+    def test_extrude_and_commit_feature(self, extrude_factory: Callable[[], Extrude], project_root: Path):
+        builder = extrude_factory()
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
-    def test_extrude_and_commit(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
-        builder = extrude_builder_factory()
+    def test_extrude_and_commit(self, extrude_factory: Callable[[], Extrude]):
+        builder = extrude_factory()
         committed_objects = builder.commit()
         assert isinstance(committed_objects[0], NXOpen.Features.Extrude)
 
-    def test_draft_and_commit_feature(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
-        builder = extrude_builder_factory()
+    def test_draft_and_commit_feature(self, extrude_factory: Callable[[], Extrude]):
+        builder = extrude_factory()
         builder.draft(NXOpen.GeometricUtilities.SimpleDraft.SimpleDraftType.SimpleFromProfile, "3.0")        
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
-    def test_draft_with_angle_option(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
-        builder = extrude_builder_factory()
+    def test_draft_with_angle_option(self, extrude_factory: Callable[[], Extrude]):
+        builder = extrude_factory()
         builder.draft(NXOpen.GeometricUtilities.SimpleDraft.SimpleDraftType.SimpleFromProfile, "3", NXOpen.GeometricUtilities.MultiDraft.AngleOption.Multiple)
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
-    def test_boolean_and_commit_feature(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
-        builder = extrude_builder_factory()
+    def test_boolean_and_commit_feature(self, extrude_factory: Callable[[], Extrude]):
+        builder = extrude_factory()
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
-    def test_offset(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
-        builder = extrude_builder_factory()
+    def test_offset(self, extrude_factory: Callable[[], Extrude]):
+        builder = extrude_factory()
         builder.offset(
             NXOpen.GeometricUtilities.Type.NonsymmetricOffset,
             "-5", 5)
@@ -76,9 +76,9 @@ class TestExtrudeBuilder:
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Extrude)
 
-    def test_boolean(self, extrude_builder_factory: Callable[[], ExtrudeBuilder]):
+    def test_boolean(self, extrude_factory: Callable[[], Extrude]):
         bodies = Part.get_bodies("BODY_02")
-        builder = extrude_builder_factory()        
+        builder = extrude_factory()        
         result = builder.boolean(
             NXOpen.GeometricUtilities.BooleanOperation.BooleanType.Unite,
             bodies)

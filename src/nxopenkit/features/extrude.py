@@ -20,7 +20,7 @@ from ..core.decorators import builder_operation
 logger = logging.getLogger(__name__)
 
 
-class ExtrudeBuilder(FeatureBuilder):
+class Extrude(FeatureBuilder):
     def __init__(
         self,
         curves: Sequence[ICurve],
@@ -98,7 +98,7 @@ class ExtrudeBuilder(FeatureBuilder):
         self,
         body_type: NXOpen.GeometricUtilities.FeatureOptions.BodyStyle = NXOpen.GeometricUtilities.FeatureOptions.BodyStyle.Solid,
         tolerance: float | None = None,
-    ) -> ExtrudeBuilder:
+    ) -> Extrude:
 
         self._validate_tolerance(tolerance)
         self._extrudeBld.DistanceTolerance = self.distance_tolerance
@@ -113,7 +113,7 @@ class ExtrudeBuilder(FeatureBuilder):
         offset_option: NXOpen.GeometricUtilities.Type,
         end_offset: float | str,
         start_offset: float | str | None = None,
-    ) -> ExtrudeBuilder:
+    ) -> Extrude:
         if (offset_option == NXOpen.GeometricUtilities.Type.NonsymmetricOffset and start_offset is None):
             raise ValueError("start_offset is required for NonsymmetricOffset.")
 
@@ -129,7 +129,7 @@ class ExtrudeBuilder(FeatureBuilder):
         self,
         boolean_option: NXOpen.GeometricUtilities.BooleanOperation.BooleanType,
         boolean_target_body: Sequence[Body],
-    ) -> ExtrudeBuilder:
+    ) -> Extrude:
 
         if (boolean_option != NXOpen.GeometricUtilities.BooleanOperation.BooleanType.Create
             and not boolean_target_body):
@@ -146,7 +146,7 @@ class ExtrudeBuilder(FeatureBuilder):
         draft_type: NXOpen.GeometricUtilities.SimpleDraft.SimpleDraftType,
         draft_angle: float | str,
         draft_option: NXOpen.GeometricUtilities.MultiDraft.AngleOption | None = None,
-    ) -> ExtrudeBuilder:
+    ) -> Extrude:
         self._extrudeBld.Draft.DraftOption = draft_type
         self._extrudeBld.Draft.DraftAngle.SetFormula(str(draft_angle))
         if draft_option is not None:

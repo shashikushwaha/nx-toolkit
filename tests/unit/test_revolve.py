@@ -11,7 +11,7 @@ from nxopenkit.core.icurve import ICurve
 from nxopenkit.core.point import Point
 from nxopenkit.maths.point3d import Point3d
 from nxopenkit.maths.vector3d import Vector3d
-from nxopenkit.modeling.revolve_builder import RevolveBuilder
+from nxopenkit.features.revolve import Revolve
 from nxopenkit.core.part import Part
 from nxopenkit.core.feature import Feature
 
@@ -26,7 +26,7 @@ def setup(project_root: Path):
     Part.close_all()
 
 @pytest.fixture
-def revolve_builder_factory(setup):
+def revolve_factory(setup):
     edges, axis_point = setup
     def _make_builder(
             curves = None,
@@ -35,7 +35,7 @@ def revolve_builder_factory(setup):
             start_angle = 0,
             end_angle = 360
     ):
-        return RevolveBuilder(
+        return Revolve(
             curves or edges, 
             direction or Vector3d(0, 0, 1), 
             point or axis_point, 
@@ -45,55 +45,55 @@ def revolve_builder_factory(setup):
     return _make_builder
 
 
-class TestRevolveBuilder:
+class TestRevolve:
     def test_rejects_empty_profile_curves(self):
         with pytest.raises(ValueError, match="At least one profile curve"):
-            RevolveBuilder([], Vector3d(0, 0, 1), [], "0", 360)
+            Revolve([], Vector3d(0, 0, 1), [], "0", 360)
 
-    def test_settings_update_distance_and_return_builder(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
-        builder = revolve_builder_factory()
+    def test_settings_update_distance_and_return_builder(self, revolve_factory: Callable[..., Revolve]):
+        builder = revolve_factory()
         result = builder.settings(NXOpen.GeometricUtilities.FeatureOptions.BodyStyle.Sheet, tolerance=0.0001)
         assert result is builder
         assert builder.nx_builder.FeatureOptions.BodyType == NXOpen.GeometricUtilities.FeatureOptions.BodyStyle.Sheet
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Revolve)
 
-    def test_revolve_and_commit_feature(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
-        builder = revolve_builder_factory()
+    def test_revolve_and_commit_feature(self, revolve_factory: Callable[..., Revolve]):
+        builder = revolve_factory()
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Revolve)
 
-    def test_reject_revolve_with_datum_axis(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
+    def test_reject_revolve_with_datum_axis(self, revolve_factory: Callable[..., Revolve]):
         axis = Part.get_datum_axes("AXIS_01")
         with pytest.raises(TypeError, match="direction must be DatumAxis, Direction, or Vector3d"):
-            revolve_builder_factory(direction = axis)
+            revolve_factory(direction = axis)
 
-    def test_revolve_with_datum_axis(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
+    def test_revolve_with_datum_axis(self, revolve_factory: Callable[..., Revolve]):
         axis = Part.get_datum_axes("AXIS_01")[0]
-        builder = revolve_builder_factory(direction=axis)
+        builder = revolve_factory(direction=axis)
         feature = builder.commit_feature()        
         parent = feature.to_nx.GetParents()
         assert isinstance(feature.to_nx, NXOpen.Features.Revolve)
         assert any(isinstance(f, NXOpen.Features.DatumAxisFeature) for f in parent)
     
-    def test_revolve_with_direction(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
+    def test_revolve_with_direction(self, revolve_factory: Callable[..., Revolve]):
         axis = Direction.create_direction_from_vector(Point3d(0,0,0), Vector3d(0,0,1))
-        builder = revolve_builder_factory(direction=axis)
+        builder = revolve_factory(direction=axis)
         feature = builder.commit_feature()        
         assert isinstance(feature.to_nx, NXOpen.Features.Revolve)
 
-    def test_revolve_and_commit(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
-        builder = revolve_builder_factory()
+    def test_revolve_and_commit(self, revolve_factory: Callable[..., Revolve]):
+        builder = revolve_factory()
         committed_objects = builder.commit()
         assert isinstance(committed_objects[0], NXOpen.Features.Revolve)
 
-    def test_boolean_and_commit_feature(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
-        builder = revolve_builder_factory()
+    def test_boolean_and_commit_feature(self, revolve_factory: Callable[..., Revolve]):
+        builder = revolve_factory()
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Revolve)
 
-    def test_offset(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
-        builder = revolve_builder_factory()
+    def test_offset(self, revolve_factory: Callable[..., Revolve]):
+        builder = revolve_factory()
         result = builder.offset(
             NXOpen.GeometricUtilities.Type.NonsymmetricOffset,
             "-5", 5)
@@ -101,9 +101,9 @@ class TestRevolveBuilder:
         feature = builder.commit_feature()
         assert isinstance(feature.to_nx, NXOpen.Features.Revolve)
 
-    def test_boolean(self, revolve_builder_factory: Callable[..., RevolveBuilder]):
+    def test_boolean(self, revolve_factory: Callable[..., Revolve]):
         bodies = Part.get_bodies("BODY_01")
-        builder = revolve_builder_factory()        
+        builder = revolve_factory()        
         result = builder.boolean(
             NXOpen.GeometricUtilities.BooleanOperation.BooleanType.Unite,
             bodies)

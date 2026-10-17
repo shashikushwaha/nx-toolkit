@@ -1,12 +1,7 @@
 import pytest
 import NXOpen
-# try:
-#     import NXOpen
-# except Exception as exc:  # pragma: no cover
-#     pytest.skip(f"NXOpen unavailable or incompatible in this environment: {exc}", allow_module_level=True)
-
 from nxopenkit.core.part import Part
-from nxopenkit.modeling.boolean_builder import BooleanBuilder
+from nxopenkit.features.boolean import BooleanBuilder
 
 
 @pytest.fixture
@@ -24,7 +19,7 @@ def builder_factory(project_root):
     Part.close_all()
 
 
-class TestBooleanBuilder:
+class TestBoolean:
     def test_rejects_empty_tool_bodies(self):
         with pytest.raises(ValueError, match="At least one tool body"):
             BooleanBuilder(None, [])

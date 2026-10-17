@@ -13,7 +13,7 @@ from nxopenkit.maths.point3d import Point3d
 from nxopenkit.maths.vector3d import Vector3d
 from nxopenkit.core.part import Part
 from nxopenkit.core.feature import Feature
-from nxopenkit.modeling.sphere import Sphere
+from nxopenkit.features.sphere import Sphere
 
 
 @pytest.fixture

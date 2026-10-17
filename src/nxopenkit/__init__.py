@@ -22,8 +22,8 @@ if ugii_base_dir:
     from .core.named_object import NamedObject
     from .core.tagged_object import TaggedObject
     from .core.point import Point
-    from .modeling.boolean_builder import BooleanBuilder
-    from .modeling.extrude_builder import  ExtrudeBuilder
+    from .features.boolean import BooleanBuilder
+    from .features.extrude import  Extrude
     from .maths.vector3d import Vector3d
     from .maths.point3d import Point3d 
     from .maths.matrix3x3 import Matrix3X3
@@ -48,7 +48,7 @@ __all__ = [
     "Point", 
     "UFManager", 
     "BooleanBuilder",
-    "ExtrudeBuilder", 
+    "Extrude", 
     "Vector3d",
     "Point3d",
     "Matrix3X3"

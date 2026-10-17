@@ -20,7 +20,7 @@ from ..core.decorators import builder_operation
 from .feature_builder import FeatureBuilder
 logger = logging.getLogger(__name__)
 
-class RevolveBuilder(FeatureBuilder):
+class Revolve(FeatureBuilder):
 
     def __init__(
         self,
@@ -90,7 +90,7 @@ class RevolveBuilder(FeatureBuilder):
         self,
         body_type: NXOpen.GeometricUtilities.FeatureOptions.BodyStyle = NXOpen.GeometricUtilities.FeatureOptions.BodyStyle.Solid,
         tolerance: float | None = None,
-    ) -> RevolveBuilder:
+    ) -> Revolve:
         self._validate_tolerance(tolerance)
         self._revolveBld.Tolerance = self.distance_tolerance
         self._revolveBld.FeatureOptions.BodyType = body_type
@@ -102,7 +102,7 @@ class RevolveBuilder(FeatureBuilder):
         boolean_option:
         NXOpen.GeometricUtilities.BooleanOperation.BooleanType,
         boolean_target_body: Sequence[Body],
-    ) -> RevolveBuilder:
+    ) -> Revolve:
         if (boolean_option != NXOpen.GeometricUtilities.BooleanOperation.BooleanType.Create and not boolean_target_body):
             raise ValueError("Target bodies are required for Unite, Subtract, and Intersect operations.")
 
@@ -117,7 +117,7 @@ class RevolveBuilder(FeatureBuilder):
         offset_option: NXOpen.GeometricUtilities.Type,
         end_offset: float | str,
         start_offset: float | str | None = None,
-    ) -> RevolveBuilder:
+    ) -> Revolve:
 
         if (offset_option == NXOpen.GeometricUtilities.Type.NonsymmetricOffset and start_offset is None):
             raise ValueError("start_offset is required for NonsymmetricOffset.")
